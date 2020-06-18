@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)https://www.itread01.com/article/1515554521.html -->
+<html class="js" lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <title>聊一聊OpenCV相機標定 - IT閱讀</title>
+<script>document.documentElement.className = document.documentElement.className.replace("no-js","js");</script>
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="referrer" content="never">
+
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="hueman-main-style-css" href="./00_files/main.min.css" type="text/css" media="all">
+<style id="hueman-main-style-inline-css" type="text/css">
+body { font-family:'Source Sans Pro', Arial, sans-serif;font-size:1.00rem }@media only screen and (min-width: 720px) {
+        .nav > li { font-size:1.00rem; }
+      }::selection { background-color: #fca61b; }
+::-moz-selection { background-color: #fca61b; }a,.themeform label .required,#flexslider-featured .flex-direction-nav .flex-next:hover,#flexslider-featured .flex-direction-nav .flex-prev:hover,.post-hover:hover .post-title a,.post-title a:hover,.sidebar.s1 .post-nav li a:hover i,.content .post-nav li a:hover i,.post-related a:hover,.sidebar.s1 .widget_rss ul li a,#footer .widget_rss ul li a,.sidebar.s1 .widget_calendar a,#footer .widget_calendar a,.sidebar.s1 .alx-tab .tab-item-category a,.sidebar.s1 .alx-posts .post-item-category a,.sidebar.s1 .alx-tab li:hover .tab-item-title a,.sidebar.s1 .alx-tab li:hover .tab-item-comment a,.sidebar.s1 .alx-posts li:hover .post-item-title a,#footer .alx-tab .tab-item-category a,#footer .alx-posts .post-item-category a,#footer .alx-tab li:hover .tab-item-title a,#footer .alx-tab li:hover .tab-item-comment a,#footer .alx-posts li:hover .post-item-title a,.comment-tabs li.active a,.comment-awaiting-moderation,.child-menu a:hover,.child-menu .current_page_item > a,.wp-pagenavi a{ color: #fca61b; }.themeform input[type="submit"],.themeform button[type="submit"],.sidebar.s1 .sidebar-top,.sidebar.s1 .sidebar-toggle,#flexslider-featured .flex-control-nav li a.flex-active,.post-tags a:hover,.sidebar.s1 .widget_calendar caption,#footer .widget_calendar caption,.author-bio .bio-avatar:after,.commentlist li.bypostauthor > .comment-body:after,.commentlist li.comment-author-admin > .comment-body:after{ background-color: #fca61b; }.post-format .format-container { border-color: #fca61b; }.sidebar.s1 .alx-tabs-nav li.active a,#footer .alx-tabs-nav li.active a,.comment-tabs li.active a,.wp-pagenavi a:hover,.wp-pagenavi a:active,.wp-pagenavi span.current{ border-bottom-color: #fca61b!important; }.sidebar.s2 .post-nav li a:hover i,
+.sidebar.s2 .widget_rss ul li a,
+.sidebar.s2 .widget_calendar a,
+.sidebar.s2 .alx-tab .tab-item-category a,
+.sidebar.s2 .alx-posts .post-item-category a,
+.sidebar.s2 .alx-tab li:hover .tab-item-title a,
+.sidebar.s2 .alx-tab li:hover .tab-item-comment a,
+.sidebar.s2 .alx-posts li:hover .post-item-title a { color: #3bcfe2; }
+.sidebar.s2 .sidebar-top,.sidebar.s2 .sidebar-toggle,.post-comments,.jp-play-bar,.jp-volume-bar-value,.sidebar.s2 .widget_calendar caption{ background-color: #3bcfe2; }.sidebar.s2 .alx-tabs-nav li.active a { border-bottom-color: #3bcfe2; }
+.post-comments span:before { border-right-color: #3bcfe2; }
+.entry-inner p{ text-indent:2em; }
+      .search-expand,
+              #nav-topbar.nav-container { background-color: #303030}@media only screen and (min-width: 720px) {
+                #nav-topbar .nav ul { background-color: #303030; }
+              }.is-scrolled #header .nav-container.desktop-sticky,
+              .is-scrolled #header .search-expand { background-color: #303030; background-color: rgba(48,48,48,0.90) }.is-scrolled .topbar-transparent #nav-topbar.desktop-sticky .nav ul { background-color: #303030; background-color: rgba(48,48,48,0.95) }#header { background-color: #363944; }
+@media only screen and (min-width: 720px) {
+  #nav-header .nav ul { background-color: #363944; }
+}
+        .is-scrolled #header #nav-mobile { background-color: #454e5c; background-color: rgba(69,78,92,0.90) }body { background-color: #eaeaea; }
+</style>
+ 
+
+<link rel="stylesheet" id="hueman-font-awesome-css" href="./00_files/font-awesome.min.css" type="text/css" media="all">
+<script type="text/javascript">
+/* <![CDATA[ */
+var monsterinsights_frontend = {"js_events_tracking":"true","is_debug_mode":"false","download_extensions":"","inbound_paths":"","home_url":"https:\/\/www.itread01.com","track_download_as":"event","internal_label":"int","hash_tracking":"false"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./00_files/frontend.min.js.下載"></script>
+<script type="text/javascript" src="./00_files/jquery.js.下載"></script>
+<script type="text/javascript" src="./00_files/jsjquery-migrate.min.js.下載"></script>
+<script type="text/javascript" src="./00_files/shCore.js.下載"></script>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<link type="text/css" rel="stylesheet" href="./00_files/shCoreDefault.css">
+
+<meta name="generator" content="WordPress 4.8.2">
+<style data-context="foundation-flickity-css">/*! Flickity v2.0.2
+http://flickity.metafizzy.co
+---------------------------------------------- */.flickity-enabled{position:relative}.flickity-enabled:focus{outline:0}.flickity-viewport{overflow:hidden;position:relative;height:100%}.flickity-slider{position:absolute;width:100%;height:100%}.flickity-enabled.is-draggable{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.flickity-enabled.is-draggable .flickity-viewport{cursor:move;cursor:-webkit-grab;cursor:grab}.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down{cursor:-webkit-grabbing;cursor:grabbing}.flickity-prev-next-button{position:absolute;top:50%;width:44px;height:44px;border:none;border-radius:50%;background:#fff;background:hsla(0,0%,100%,.75);cursor:pointer;-webkit-transform:translateY(-50%);transform:translateY(-50%)}.flickity-prev-next-button:hover{background:#fff}.flickity-prev-next-button:focus{outline:0;box-shadow:0 0 0 5px #09F}.flickity-prev-next-button:active{opacity:.6}.flickity-prev-next-button.previous{left:10px}.flickity-prev-next-button.next{right:10px}.flickity-rtl .flickity-prev-next-button.previous{left:auto;right:10px}.flickity-rtl .flickity-prev-next-button.next{right:auto;left:10px}.flickity-prev-next-button:disabled{opacity:.3;cursor:auto}.flickity-prev-next-button svg{position:absolute;left:20%;top:20%;width:60%;height:60%}.flickity-prev-next-button .arrow{fill:#333}.flickity-page-dots{position:absolute;width:100%;bottom:-25px;padding:0;margin:0;list-style:none;text-align:center;line-height:1}.flickity-rtl .flickity-page-dots{direction:rtl}.flickity-page-dots .dot{display:inline-block;width:10px;height:10px;margin:0 8px;background:#333;border-radius:50%;opacity:.25;cursor:pointer}.flickity-page-dots .dot.is-selected{opacity:1}</style><style data-context="foundation-slideout-css">.slideout-menu{position:fixed;left:0;top:0;bottom:0;right:auto;z-index:0;width:256px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none}.slideout-menu.pushit-right{left:auto;right:0}.slideout-panel{position:relative;z-index:1;will-change:transform}.slideout-open,.slideout-open .slideout-panel,.slideout-open body{overflow:hidden}.slideout-open .slideout-menu{display:block}.pushit{display:none} code {
+padding: 2px 4px;
+color: #d14;
+background-color: #fbfbfb;
+border: 1px solid #e1e1e8;
+white-space: nowrap;
+font-family:Monaco,Menlo,Consolas,"Courier New",monospace;
+font-size: 10px;
+border-radius: 3px;
+}</style><!--[if lt IE 9]>
+<script src="/img/css/js/html5shiv-printshiv.min.js"></script>
+<script src="/img/css/js/selectivizr.js"></script>
+<![endif]-->
+<style>.ios7.web-app-mode.has-fixed header{ background-color: rgba(45,53,63,.88);}</style></head>
+<body data-rsssl="1" class="post-template-default single single-post postid-43193 single-format-standard wp-custom-logo col-2cl full-width topbar-enabled header-desktop-sticky header-mobile-sticky chrome hu-smoothscroll">
+    <div id="wrapper">
+        <header id="header" class="specific-mobile-menu-on one-mobile-menu mobile_menu header-ads-desktop header-ads-mobile topbar-transparent no-header-img fixed-header-on" style="height: 175px; padding-top: 50px;">
+        <nav class="nav-container group mobile-menu mobile-sticky " id="nav-mobile" data-menu-id="header-1">
+  <div class="mobile-title-logo-in-header"><p class="site-title"><a class="custom-logo-link" href="https://www.itread01.com/" rel="home" title="首頁"><img src="./00_files/logo.png"></a></p>
+                </div>
+        <div class="ham__navbar-toggler-two collapsed" title="Menu" aria-expanded="false">
+          <div class="ham__navbar-span-wrapper">
+            <span class="line line-1"></span>
+            <span class="line line-2"></span>
+            <span class="line line-3"></span>
+          </div>
+        </div>
+            
+      <div class="nav-text"></div>
+      <div class="nav-wrap container">
+                  <ul class="nav container-inner group mobile-search">
+                            <li>
+                  <form class="searchform themeform" onsubmit="return searchKw(this)">
+	<div>
+		<input type="text" name="kw" class="search" onblur="if(this.value==&#39;&#39;)this.value=&#39;輸入關鍵字後搜尋&#39;;" onfocus="if(this.value==&#39;輸入關鍵字後搜尋&#39;)this.value=&#39;&#39;;" value="輸入關鍵字後搜尋">
+	</div>
+</form>    
+<script>function searchKw(c){var b=c.getElementsByTagName("input")[0],a=b.value.replace(/^\s+|\s+$/g,"");a=a.replace(/['"]/g,"");location.href="https://www.itread01.com/search/"+encodeURIComponent(a)+"";return false};</script>            </li>
+                      </ul>
+                <ul id="menu-top" class="nav container-inner group">
+                 <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/">首頁</a></li>
+				<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/%E7%A7%91%E6%8A%80/">科技</a></li>
+						  <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/info/">程式語言</a></li>
+ 
+</ul>      </div>
+</nav><!--/#nav-topbar-->  
+        <nav class="nav-container group desktop-menu desktop-sticky sticky-visible" id="nav-topbar" data-menu-id="header-2" style="max-width: 1903px;">
+    <div class="nav-text"></div>
+  <div class="topbar-toggle-down">
+    <i class="fas fa-angle-double-down" aria-hidden="true" data-toggle="down" title="展開功能表清單"></i>
+    <i class="fas fa-angle-double-up" aria-hidden="true" data-toggle="up" title="折疊功能表清單"></i>
+  </div>
+  <div class="nav-wrap container">
+    <ul id="menu-footer" class="nav container-inner group"> 
+    <li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/" rel="nofollow">首頁</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/study/mysql-tutorial.html">MySQL教學</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/t/%E7%B6%B2%E7%AB%99%E6%8A%80%E5%B7%A7/1/">網站技巧</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/t/%E7%B6%B2%E8%B7%AF%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/1/">網路程式設計</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/t/%E8%BB%9F%E9%AB%94%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/1/">軟體程式設計</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/t/%E8%B3%87%E6%96%99%E5%BA%AB/1/">資料庫</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/t/%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1/1/">作業系統</a></li>
+<li id="menu-item-1907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1907"><a href="https://www.itread01.com/t/%E6%8C%87%E4%BB%A4%E7%A2%BC%E5%B0%88%E6%AC%84/1/">其它</a></li>
+ 
+</ul>  </div>
+      <div id="topbar-header-search" class="container">
+      <div class="container-inner">
+        <div class="toggle-search"><i class="fas fa-search"></i></div>
+        <div class="search-expand">
+          <div class="search-expand-inner"><form class="searchform themeform" onsubmit="return searchKw(this)">
+	<div>
+		<input type="text" class="search" name="kw" onblur="if(this.value==&#39;&#39;)this.value=&#39;輸入關鍵字後搜尋&#39;;" onfocus="if(this.value==&#39;輸入關鍵字後搜尋&#39;)this.value=&#39;&#39;;" value="輸入關鍵字後搜尋">
+	</div>
+</form></div>
+        </div>
+      </div><!--/.container-inner-->
+    </div><!--/.container-->
+  
+</nav><!--/#nav-topbar-->  
+  <div class="container group">
+        <div class="container-inner">
+
+                    <div class="group pad central-header-zone">
+                  <div class="logo-tagline-group">
+                                        <p class="site-title"><a class="custom-logo-link" href="https://www.itread01.com/" rel="home"><img src="./00_files/logo.png"></a></p>
+                                                        </div>
+
+                                        <div id="header-widgets">
+                          <div id="custom_html-2" class="widget_text widget widget_custom_html"><div class="textwidget custom-html-widget"><!-- /109765683/728_Banner -->
+ </div></div>                      </div><!--/#header-ads-->
+                                </div>
+                <nav class="nav-container group desktop-menu " id="nav-header" data-menu-id="header-3">
+    <div class="nav-text"><!-- put your mobile menu text here --></div>
+  <div class="nav-wrap container">
+        <ul id="menu-top-1" class="nav container-inner group">
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/">首頁</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/%E7%A7%91%E6%8A%80/">科技</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/info/">程式語言</a></li>
+</ul>  </div>
+</nav><!--/#nav-header-->      
+    </div><!--/.container-inner-->
+      </div><!--/.container-->
+</header><!--/#header-->        
+        <div class="container" id="page">
+            <div class="container-inner">
+
+                                <div class="main" style="">
+                    <div class="main-inner group">
+                        
+              <section class="content">
+              <div class="page-title pad group">
+          	    		<ul class="meta-single group">
+    			<li class="category"><a href="https://www.itread01.com/t/%E8%BB%9F%E9%AB%94%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/1/">軟體程式設計</a></li>
+    			    		</ul>
+
+    	
+    </div><!--/.page-title-->
+          <div class="pad group">
+              <article class="post-43193 post type-post status-publish format-standard has-post-thumbnail hentry category-news tag-stripe tag-32305 tag-32306 tag-4550 tag-5237 tag-31545 tag-6260">
+    <div class="post-inner group">
+
+      <h1 class="post-title entry-title">聊一聊OpenCV相機標定</h1>
+<p class="post-byline"><span class="vcard author">
+     <span class="fn"><a href="https://www.itread01.com/t/%E8%BB%9F%E9%AB%94%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/1/">軟體程式設計</a></span>
+   </span> ·
+                            發表 <time class="published">2018-01-10</time>
+             
+               </p>
+                <ins id="scupio-sc-4995-17811-847678" class="scupioadslot" style="display: inline-block; width: 100%; height: 100px; position: relative;" data-sca-pub="lRIJBAgyQA==" data-sca-web="4995" data-sca-category="17" data-sca-cid="17811" data-sca-slot-type="PRA" data-sca-status="callback" undefined="0"><iframe name="scupioadframe" marginwidth="0" marginheight="0" frameborder="0" id="scupio-sc-4995-17811-847678_frame" src="./00_files/ad.html" style="box-sizing: content-box; overflow: hidden; border: 0px; padding: 0px; margin: 0px; width: 100%; height: 100px; display: none;"></iframe><span id="viewability_detector_17811" style="position: absolute; z-index: -99999; background-color: transparent; left: 50%; top: 50%; width: 1px; height: 1px;"></span><ins class="scupioadslot" data-sca-pub="lRIJBAgyQA==" data-sca-web="4995" data-sca-category="17" data-sca-cid="17812" data-sca-slot-type="STA" data-sca-status="done" undefined="3" style="display: inline-block; width: 100%; height: 100px; margin: auto; position: relative;"><iframe name="scupioadframe" marginwidth="0" marginheight="0" frameborder="0" id="sc-1592447602474-577372148468_frame" src="./00_files/ad(1).html" style="box-sizing: content-box; overflow: hidden; border: 0px; padding: 0px; margin: 0px; width: 100%; height: 100px;"></iframe><span id="viewability_detector_17812" style="position: absolute; z-index: -99999; background-color: transparent; left: 50%; top: 50%; width: 1px; height: 1px;"></span></ins></ins>
+<script async="" src="./00_files/ad.js.下載"></script>
+<script>
+(function(s, c, u, p, i, o, a, d) {
+    'use strict';
+    var z=function(t,e,r){var a,n=document.createElement('ins'),s=n.style;for(a in n.className='scupioadslot',r&&(n.id=r),t)t.hasOwnProperty(a)&&(s[a]=t[a]);for(a in e)e.hasOwnProperty(a)&&n.setAttribute('data-sca-'+a,e[a]);return n};
+    (d = s.Scupioads = s.Scupioads || []).push({
+        id: u,
+        callback: function() {
+            p = c.getElementById(u);
+            i = p.style;
+            o = 'inline-block';
+            p.appendChild(z({
+                display: o,
+                width: '100%',
+                height: '100px',
+                margin: 'auto'
+            }, {
+                'pub': 'lRIJBAgyQA==',
+                'web': '4995',
+                'category': '17',
+                'cid': '17812',
+                'slot-type': 'STA'
+            }));
+            i.width = '100%';
+            i.height = '100px';
+            i.display = o;
+        }
+    });
+    setTimeout(function(){if(!s.Scupioads.init)for(i=d.length-1;0<=i;i--)if(d[i].id===u){d[i].callback(),d[i].callback=function(){};break}},1e3);
+})(window, document, 'scupio-sc-4995-17811-847678');
+</script>
+      
+      <div class="clear"></div>
+      <div class="entry themeform share">
+        <div class="entry-inner">
+		<p>這篇文章主要為大家詳細介紹了OpenCV相機標定的相關資料，即獲得相機引數的過程，具有一定的參考價值，感興趣的小夥伴們可以參考一下     
+	 </p><p><strong>相機標定：簡單的說，就是獲得相機引數的過程。引數如：相機內參數矩陣，投影矩陣，旋轉矩陣和平移矩陣等</strong></p>
+<p><strong>什麼叫相機引數？</strong></p>
+<p>簡單的說，將現實世界中的人、物，拍成一張影象（二維）。人或物在世界中的三維座標，和影象上對應的二維座標間的關係。表達兩種不同維度座標間的關係用啥表示？用相機引數。</p>
+<p><span style="color: #800000"><strong>相機的成像原理</strong></span></p>
+<p>先來看一下，相機的成像原理： <br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997090-6731.jpg">&nbsp;<br>
+</p>
+<p>如圖所示，這是一個相機模型。將物體簡化看成一個點。來自物體的光，通過鏡頭，擊中影象平面（影象感測器），以此成像。d0是物體到鏡頭的距離，di時鏡頭到影象平面的距離，f是鏡頭的焦距。三者滿足以下關係。 <br>
+</p>
+<p style="text-align: left"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997091-6052.jpg">&nbsp;</p>
+<p><strong>現在，簡化上面的相機模型。</strong> <br>
+</p>
+<p>將相機孔徑看成無窮小，只考慮中心位置的射線，這樣就忽視了透鏡的影響。然後由於d0遠遠大於di，將影象平面放在焦距處，這樣物體在影象平面上成像為倒立的影像（沒有透鏡的影響，只考慮從中心的孔徑進入的光線）。這個簡化的模型就是針孔攝像機模型。然後，我們在鏡頭前，將影象平面放在焦距距離的位置，就可以簡單獲得一個筆直的影象（不倒立）。當然，這只是理論上的，你不可能將影象感測器從相機裡拿出來，放在鏡頭前面。實際應用中，針孔攝像機應該是將成像後的影象倒過來，以獲得正立的影象。 <br>
+到此，我們獲得了一個簡化的模型，如下圖： <br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997092-1873.jpg">&nbsp;<br>
+</p>
+<p>h0是物體的高，hi是影象上物體的高，f是焦距（距離），d0是影象到鏡頭的距離。四者滿足如下關係： <br>
+</p>
+<p><img title="" alt="這裡寫圖片描述" src="./00_files/1537997093-9527.jpg">（1） <br>
+</p>
+<p>物體在影象中的高度hi，和d0成反比。也就是說，離鏡頭越遠，物體在影象中越小，離得越近越大（好吧，這句話是廢話）。 <br>
+<strong>但通過這個式子，我們便能夠預測三維中的物體，在影象（二維）中的位置。那麼怎麼預測？</strong></p>
+<p><span style="color: #800000"><strong>相機標定</strong></span></p>
+<p>如下圖所示，根據上面簡化的模型，考慮三維世界中的一個點，和其在影象（二維）中的座標關係。 <br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997094-7104.jpg">&nbsp;<br>
+</p>
+<p>（X，Y，Z）為點的三維座標，（x，y）為其通過相機成像後在影象（二維）上的座標。u0和v0是相機的中心點（主點)，該點位於影象平面中心（理論上是這樣。但實際的相機會有幾個畫素的偏差） <br>
+現在只考慮y方向上，由於需要將三維世界中的座標，轉換為影象上的畫素（影象上的座標，實際上是畫素的位置），需要求y方向上焦距等於多少個畫素（用畫素值表示焦距），Py表示畫素的高，焦距f（米或毫米）。垂直畫素表示的焦距為</p>
+<p><img title="" alt="這裡寫圖片描述" src="./00_files/1537997095-8253.jpg"> <br>
+</p>
+<p>根據式子（1），只考慮y方向。我們三維世界中得點，在影象（二維）中y的座標。 <br>
+</p>
+<p><img title="" alt="這裡寫圖片描述" src="./00_files/1537997095-2385.jpg">&nbsp;<br>
+</p>
+<p>同理，得到x的座標。 <br>
+</p>
+<p><img title="" alt="這裡寫圖片描述" src="./00_files/1537997096-4111.jpg">&nbsp;<br>
+</p>
+<p>現在，將上圖中的座標系的原點O，移動到影象的左上角。由於（x，y）是關於（u0，v0）的偏移，上面表示影象（二維）中點的座標的式子不變。將式子以矩陣的形式重寫，得。 <br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997097-2001.jpg">&nbsp;<br>
+</p>
+<p>其中，等式左邊的第一個矩陣，叫做“相機內參數矩陣”，第二個矩陣叫（投影矩陣）。</p>
+<p>更為一般的情況，開始時的參考座標系不位於主點（中心點），需要額外兩個引數“旋轉向量”和“平移向量”來表示這個式子，這兩個引數在不同視角中是不一樣的。整合後，上述式子重寫為。 <br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997098-4023.jpg"></p>
+<p><span style="color: #800000"><strong>校正畸變 </strong></span><br>
+</p>
+<p>通過相機標定，獲得了相機引數後，可以計算兩個對映函式（x座標和y座標），它們分別給出了沒有畸變的影象座標。將畸變的影象重新對映成為沒有畸變的影象。</p>
+<p><strong>程式碼：</strong></p>
+<p>做相機標定時，一般用標定板(棋盤）拍攝一組影象，利用這些影象提取角點，通過角點在影象中得座標和三維世界中的座標（通常自定義3維座標），計算相機引數。</p>
+<div class="itrcode">
+<div><div id="highlighter_874289" class="syntaxhighlighter  cpp"><div class="toolbar"><span><a href="https://www.itread01.com/article/1515554521.html#" class="toolbar_item command_help help">?</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="cpp plain">std::vector&lt;cv::Point2f&gt;imageConers;</code></div><div class="line number2 index1 alt1"><code class="cpp comments">//提取標定影象角點，儲存角點座標（二維）</code></div><div class="line number3 index2 alt2"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">cv::findChessboardCorners(image,</code></div><div class="line number4 index3 alt1"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">boardSize, </code><code class="cpp comments">//角點數目如（6,4）六行，四列</code></div><div class="line number5 index4 alt2"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">imageConers);</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>函式calibrateCamera完成相機標定工作。</p>
+<div class="itrcode">
+<div><div id="highlighter_676645" class="syntaxhighlighter  cpp"><div class="toolbar"><span><a href="https://www.itread01.com/article/1515554521.html#" class="toolbar_item command_help help">?</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="cpp plain">cv::calibrateCamera(objectPoints,</code><code class="cpp comments">//三維座標</code></div><div class="line number2 index1 alt1"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">imagePoints, </code><code class="cpp comments">//二維座標</code></div><div class="line number3 index2 alt2"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">imageSize,</code><code class="cpp comments">//影象大小</code></div><div class="line number4 index3 alt1"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">camerMatirx,</code><code class="cpp comments">//相機內參數矩陣</code></div><div class="line number5 index4 alt2"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">disCoeffs,</code><code class="cpp comments">//投影矩陣</code></div><div class="line number6 index5 alt1"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">rvecs, </code><code class="cpp comments">//旋轉</code></div><div class="line number7 index6 alt2"><code class="cpp spaces">&nbsp;</code><code class="cpp plain">tvecs,</code><code class="cpp comments">//平移</code></div><div class="line number8 index7 alt1"><code class="cpp plain">flag </code><code class="cpp comments">//標記opencv提供幾種引數，可以參看線上的opencv document</code></div><div class="line number9 index8 alt2"><code class="cpp plain">);</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>計算畸變引數，去畸變</p>
+<div class="itrcode">
+<div><div id="highlighter_297736" class="syntaxhighlighter  cpp"><div class="toolbar"><span><a href="https://www.itread01.com/article/1515554521.html#" class="toolbar_item command_help help">?</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="cpp comments">//計算畸變引數</code></div><div class="line number2 index1 alt1"><code class="cpp plain">cv::initUndistortRectifyMap(camerMatirx, disCoeffs,</code></div><div class="line number3 index2 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat(), cv::Mat(), image.size(), CV_32FC1, </code></div><div class="line number4 index3 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">map1, </code><code class="cpp comments">//x對映函式</code></div><div class="line number5 index4 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">map2 </code><code class="cpp comments">//y對映函式</code></div><div class="line number6 index5 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">);</code></div><div class="line number7 index6 alt2"><code class="cpp comments">//應用對映函式</code></div><div class="line number8 index7 alt1"><code class="cpp plain">cv::remap(image, </code><code class="cpp comments">//畸變影象</code></div><div class="line number9 index8 alt2"><code class="cpp plain">undistorted, </code><code class="cpp comments">//去畸變影象</code></div><div class="line number10 index9 alt1"><code class="cpp plain">map1, map2, cv::INTER_LINEAR);</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>現在整合程式碼。</p>
+<p>示例：<br>
+</p>
+<p>標頭.h</p>
+<div class="itrcode">
+<div><div id="highlighter_586941" class="syntaxhighlighter  cpp"><div class="toolbar"><span><a href="https://www.itread01.com/article/1515554521.html#" class="toolbar_item command_help help">?</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div><div class="line number16 index15 alt1">16</div><div class="line number17 index16 alt2">17</div><div class="line number18 index17 alt1">18</div><div class="line number19 index18 alt2">19</div><div class="line number20 index19 alt1">20</div><div class="line number21 index20 alt2">21</div><div class="line number22 index21 alt1">22</div><div class="line number23 index22 alt2">23</div><div class="line number24 index23 alt1">24</div><div class="line number25 index24 alt2">25</div><div class="line number26 index25 alt1">26</div><div class="line number27 index26 alt2">27</div><div class="line number28 index27 alt1">28</div><div class="line number29 index28 alt2">29</div><div class="line number30 index29 alt1">30</div><div class="line number31 index30 alt2">31</div><div class="line number32 index31 alt1">32</div><div class="line number33 index32 alt2">33</div><div class="line number34 index33 alt1">34</div><div class="line number35 index34 alt2">35</div><div class="line number36 index35 alt1">36</div><div class="line number37 index36 alt2">37</div><div class="line number38 index37 alt1">38</div><div class="line number39 index38 alt2">39</div><div class="line number40 index39 alt1">40</div><div class="line number41 index40 alt2">41</div><div class="line number42 index41 alt1">42</div><div class="line number43 index42 alt2">43</div><div class="line number44 index43 alt1">44</div><div class="line number45 index44 alt2">45</div><div class="line number46 index45 alt1">46</div><div class="line number47 index46 alt2">47</div><div class="line number48 index47 alt1">48</div><div class="line number49 index48 alt2">49</div><div class="line number50 index49 alt1">50</div><div class="line number51 index50 alt2">51</div><div class="line number52 index51 alt1">52</div><div class="line number53 index52 alt2">53</div><div class="line number54 index53 alt1">54</div><div class="line number55 index54 alt2">55</div><div class="line number56 index55 alt1">56</div><div class="line number57 index56 alt2">57</div><div class="line number58 index57 alt1">58</div><div class="line number59 index58 alt2">59</div><div class="line number60 index59 alt1">60</div><div class="line number61 index60 alt2">61</div><div class="line number62 index61 alt1">62</div><div class="line number63 index62 alt2">63</div><div class="line number64 index63 alt1">64</div><div class="line number65 index64 alt2">65</div><div class="line number66 index65 alt1">66</div><div class="line number67 index66 alt2">67</div><div class="line number68 index67 alt1">68</div><div class="line number69 index68 alt2">69</div><div class="line number70 index69 alt1">70</div><div class="line number71 index70 alt2">71</div><div class="line number72 index71 alt1">72</div><div class="line number73 index72 alt2">73</div><div class="line number74 index73 alt1">74</div><div class="line number75 index74 alt2">75</div><div class="line number76 index75 alt1">76</div><div class="line number77 index76 alt2">77</div><div class="line number78 index77 alt1">78</div><div class="line number79 index78 alt2">79</div><div class="line number80 index79 alt1">80</div><div class="line number81 index80 alt2">81</div><div class="line number82 index81 alt1">82</div><div class="line number83 index82 alt2">83</div><div class="line number84 index83 alt1">84</div><div class="line number85 index84 alt2">85</div><div class="line number86 index85 alt1">86</div><div class="line number87 index86 alt2">87</div><div class="line number88 index87 alt1">88</div><div class="line number89 index88 alt2">89</div><div class="line number90 index89 alt1">90</div><div class="line number91 index90 alt2">91</div><div class="line number92 index91 alt1">92</div><div class="line number93 index92 alt2">93</div><div class="line number94 index93 alt1">94</div><div class="line number95 index94 alt2">95</div><div class="line number96 index95 alt1">96</div><div class="line number97 index96 alt2">97</div><div class="line number98 index97 alt1">98</div><div class="line number99 index98 alt2">99</div><div class="line number100 index99 alt1">100</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="cpp preprocessor">#include&lt;opencv2\core\core.hpp&gt;</code></div><div class="line number2 index1 alt1"><code class="cpp preprocessor">#include&lt;opencv2\highgui\highgui.hpp&gt;</code></div><div class="line number3 index2 alt2"><code class="cpp preprocessor">#include&lt;opencv2\imgproc\imgproc.hpp&gt;</code></div><div class="line number4 index3 alt1"><code class="cpp preprocessor">#include&lt;opencv2\calib3d\calib3d.hpp&gt;</code></div><div class="line number5 index4 alt2"><code class="cpp preprocessor">#include &lt;opencv2/features2d/features2d.hpp&gt;</code></div><div class="line number6 index5 alt1"><code class="cpp preprocessor">#include&lt;string&gt;</code></div><div class="line number7 index6 alt2"><code class="cpp preprocessor">#include&lt;vector&gt;</code></div><div class="line number8 index7 alt1"><code class="cpp keyword bold">class</code> <code class="cpp plain">CameraCalibrator</code></div><div class="line number9 index8 alt2"><code class="cpp plain">{</code></div><div class="line number10 index9 alt1"><code class="cpp keyword bold">private</code><code class="cpp plain">:</code></div><div class="line number11 index10 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//世界座標</code></div><div class="line number12 index11 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::vector &lt; std::vector&lt;cv::Point3f &gt;&gt; objectPoints;</code></div><div class="line number13 index12 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//影象座標</code></div><div class="line number14 index13 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::vector &lt;std::vector&lt;cv::Point2f&gt;&gt; imagePoints;</code></div><div class="line number15 index14 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//輸出矩陣</code></div><div class="line number16 index15 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat camerMatirx;</code></div><div class="line number17 index16 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat disCoeffs;</code></div><div class="line number18 index17 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//標記</code></div><div class="line number19 index18 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">flag;</code></div><div class="line number20 index19 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//去畸變引數</code></div><div class="line number21 index20 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat map1, map2;</code></div><div class="line number22 index21 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//是否去畸變</code></div><div class="line number23 index22 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp color1 bold">bool</code> <code class="cpp plain">mustInitUndistort;</code></div><div class="line number24 index23 alt1">&nbsp;</div><div class="line number25 index24 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">///儲存點資料</code></div><div class="line number26 index25 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp keyword bold">void</code> <code class="cpp plain">addPoints(</code><code class="cpp keyword bold">const</code> <code class="cpp plain">std::vector&lt;cv::Point2f&gt;&amp;imageConers, </code><code class="cpp keyword bold">const</code> <code class="cpp plain">std::vector&lt;cv::Point3f&gt;&amp;objectConers)</code></div><div class="line number27 index26 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number28 index27 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">imagePoints.push_back(imageConers);</code></div><div class="line number29 index28 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">objectPoints.push_back(objectConers);</code></div><div class="line number30 index29 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number31 index30 alt2"><code class="cpp keyword bold">public</code><code class="cpp plain">:</code></div><div class="line number32 index31 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">CameraCalibrator() :flag(0), mustInitUndistort(</code><code class="cpp keyword bold">true</code><code class="cpp plain">){}</code></div><div class="line number33 index32 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//開啟棋盤圖片，提取角點</code></div><div class="line number34 index33 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">addChessboardPoints(</code><code class="cpp keyword bold">const</code> <code class="cpp plain">std::vector&lt;std::string&gt;&amp;filelist,cv::Size &amp;boardSize)</code></div><div class="line number35 index34 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number36 index35 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">std::vector&lt;cv::Point2f&gt;imageConers;</code></div><div class="line number37 index36 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">std::vector&lt;cv::Point3f&gt;objectConers;</code></div><div class="line number38 index37 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//輸入角點的世界座標</code></div><div class="line number39 index38 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code> <code class="cpp plain">(</code><code class="cpp color1 bold">int</code> <code class="cpp plain">i = 0; i &lt; boardSize.height; i++)</code></div><div class="line number40 index39 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number41 index40 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code> <code class="cpp plain">(</code><code class="cpp color1 bold">int</code> <code class="cpp plain">j = 0; j &lt; boardSize.width; j++)</code></div><div class="line number42 index41 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number43 index42 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">objectConers.push_back(cv::Point3f(i, j, 0.0f));</code></div><div class="line number44 index43 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number45 index44 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number46 index45 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//計算角點在影象中的座標</code></div><div class="line number47 index46 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat image;</code></div><div class="line number48 index47 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">int</code> <code class="cpp plain">success = 0;</code></div><div class="line number49 index48 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code> <code class="cpp plain">(</code><code class="cpp color1 bold">int</code> <code class="cpp plain">i = 0; i &lt; filelist.size(); i++)</code></div><div class="line number50 index49 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number51 index50 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">image = cv::imread(filelist[i],0);</code></div><div class="line number52 index51 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//找到角點座標</code></div><div class="line number53 index52 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp color1 bold">bool</code> <code class="cpp plain">found = cv::findChessboardCorners(image, boardSize, imageConers);</code></div><div class="line number54 index53 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::cornerSubPix(image, </code></div><div class="line number55 index54 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">imageConers,</code></div><div class="line number56 index55 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::Size(5, 5),</code></div><div class="line number57 index56 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::Size(-1, -1),</code></div><div class="line number58 index57 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS,</code></div><div class="line number59 index58 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">30, 0.1));</code></div><div class="line number60 index59 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code> <code class="cpp plain">(imageConers.size() == boardSize.area())</code></div><div class="line number61 index60 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number62 index61 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">addPoints(imageConers, objectConers);</code></div><div class="line number63 index62 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">success++;</code></div><div class="line number64 index63 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number65 index64 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//畫出角點</code></div><div class="line number66 index65 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::drawChessboardCorners(image, boardSize, imageConers, found);</code></div><div class="line number67 index66 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::imshow(</code><code class="cpp string">"Corners on Chessboard"</code><code class="cpp plain">, image);</code></div><div class="line number68 index67 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::waitKey(100);</code></div><div class="line number69 index68 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number70 index69 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">success;</code></div><div class="line number71 index70 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number72 index71 alt1">&nbsp;</div><div class="line number73 index72 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//相機標定</code></div><div class="line number74 index73 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp color1 bold">double</code> <code class="cpp plain">calibrate(cv::Size&amp;imageSize)</code></div><div class="line number75 index74 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number76 index75 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">mustInitUndistort = </code><code class="cpp keyword bold">true</code><code class="cpp plain">;</code></div><div class="line number77 index76 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">std::vector&lt;cv::Mat&gt;rvecs, tvecs;</code></div><div class="line number78 index77 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//相機標定</code></div><div class="line number79 index78 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">cv::calibrateCamera(objectPoints, imagePoints, imageSize,</code></div><div class="line number80 index79 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">camerMatirx, disCoeffs, rvecs, tvecs, flag);</code></div><div class="line number81 index80 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number82 index81 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">///去畸變</code></div><div class="line number83 index82 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat remap(</code><code class="cpp keyword bold">const</code> <code class="cpp plain">cv::Mat &amp;image)</code></div><div class="line number84 index83 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number85 index84 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat undistorted;</code></div><div class="line number86 index85 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">if</code> <code class="cpp plain">(mustInitUndistort)</code></div><div class="line number87 index86 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number88 index87 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//計算畸變引數</code></div><div class="line number89 index88 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::initUndistortRectifyMap(camerMatirx, disCoeffs,</code></div><div class="line number90 index89 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat(), cv::Mat(), image.size(), CV_32FC1, map1, map2);</code></div><div class="line number91 index90 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">mustInitUndistort = </code><code class="cpp keyword bold">false</code><code class="cpp plain">;</code></div><div class="line number92 index91 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number93 index92 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">//應用對映函式</code></div><div class="line number94 index93 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::remap(image, undistorted, map1, map2, cv::INTER_LINEAR);</code></div><div class="line number95 index94 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp keyword bold">return</code> <code class="cpp plain">undistorted;</code></div><div class="line number96 index95 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number97 index96 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//常成員函式，獲得相機內參數矩陣、投影矩陣資料</code></div><div class="line number98 index97 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat getCameraMatrix() </code><code class="cpp keyword bold">const</code> <code class="cpp plain">{ </code><code class="cpp keyword bold">return</code> <code class="cpp plain">camerMatirx; }</code></div><div class="line number99 index98 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat getDistCoeffs()&nbsp; </code><code class="cpp keyword bold">const</code> <code class="cpp plain">{ </code><code class="cpp keyword bold">return</code> <code class="cpp plain">disCoeffs; }</code></div><div class="line number100 index99 alt1"><code class="cpp plain">};</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>源.cpp</p>
+<div class="itrcode">
+<div><div id="highlighter_579669" class="syntaxhighlighter  cpp"><div class="toolbar"><span><a href="https://www.itread01.com/article/1515554521.html#" class="toolbar_item command_help help">?</a></span></div><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td class="gutter"><div class="line number1 index0 alt2">1</div><div class="line number2 index1 alt1">2</div><div class="line number3 index2 alt2">3</div><div class="line number4 index3 alt1">4</div><div class="line number5 index4 alt2">5</div><div class="line number6 index5 alt1">6</div><div class="line number7 index6 alt2">7</div><div class="line number8 index7 alt1">8</div><div class="line number9 index8 alt2">9</div><div class="line number10 index9 alt1">10</div><div class="line number11 index10 alt2">11</div><div class="line number12 index11 alt1">12</div><div class="line number13 index12 alt2">13</div><div class="line number14 index13 alt1">14</div><div class="line number15 index14 alt2">15</div><div class="line number16 index15 alt1">16</div><div class="line number17 index16 alt2">17</div><div class="line number18 index17 alt1">18</div><div class="line number19 index18 alt2">19</div><div class="line number20 index19 alt1">20</div><div class="line number21 index20 alt2">21</div><div class="line number22 index21 alt1">22</div><div class="line number23 index22 alt2">23</div><div class="line number24 index23 alt1">24</div><div class="line number25 index24 alt2">25</div><div class="line number26 index25 alt1">26</div><div class="line number27 index26 alt2">27</div><div class="line number28 index27 alt1">28</div><div class="line number29 index28 alt2">29</div><div class="line number30 index29 alt1">30</div><div class="line number31 index30 alt2">31</div><div class="line number32 index31 alt1">32</div><div class="line number33 index32 alt2">33</div><div class="line number34 index33 alt1">34</div><div class="line number35 index34 alt2">35</div><div class="line number36 index35 alt1">36</div><div class="line number37 index36 alt2">37</div><div class="line number38 index37 alt1">38</div><div class="line number39 index38 alt2">39</div><div class="line number40 index39 alt1">40</div></td><td class="code"><div class="container"><div class="line number1 index0 alt2"><code class="cpp preprocessor">#include"標頭.h"</code></div><div class="line number2 index1 alt1"><code class="cpp preprocessor">#include&lt;iomanip&gt;</code></div><div class="line number3 index2 alt2"><code class="cpp preprocessor">#include&lt;iostream&gt;</code></div><div class="line number4 index3 alt1"><code class="cpp color1 bold">int</code> <code class="cpp plain">main()</code></div><div class="line number5 index4 alt2"><code class="cpp plain">{</code></div><div class="line number6 index5 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">CameraCalibrator Cc;</code></div><div class="line number7 index6 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat image;</code></div><div class="line number8 index7 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::vector&lt;std::string&gt; filelist;</code></div><div class="line number9 index8 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::namedWindow(</code><code class="cpp string">"Image"</code><code class="cpp plain">);</code></div><div class="line number10 index9 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp keyword bold">for</code> <code class="cpp plain">(</code><code class="cpp color1 bold">int</code> <code class="cpp plain">i = 1; i &lt;= 22; i++)</code></div><div class="line number11 index10 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">{</code></div><div class="line number12 index11 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp comments">///讀取圖片</code></div><div class="line number13 index12 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">std::stringstream s;</code></div><div class="line number14 index13 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">s &lt;&lt; </code><code class="cpp string">"D:/images/chessboards/chessboard"</code> <code class="cpp plain">&lt;&lt; std::setw(2) &lt;&lt; std::setfill(</code><code class="cpp string">'0'</code><code class="cpp plain">) &lt;&lt; i &lt;&lt; </code><code class="cpp string">".jpg"</code><code class="cpp plain">;</code></div><div class="line number15 index14 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">std::cout &lt;&lt; s.str() &lt;&lt; std::endl;</code></div><div class="line number16 index15 alt1">&nbsp;</div><div class="line number17 index16 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">filelist.push_back(s.str());</code></div><div class="line number18 index17 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">image = cv::imread(s.str(),0);</code></div><div class="line number19 index18 alt2"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::imshow(</code><code class="cpp string">"Image"</code><code class="cpp plain">, image);</code></div><div class="line number20 index19 alt1"><code class="cpp spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="cpp plain">cv::waitKey(100);</code></div><div class="line number21 index20 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">}</code></div><div class="line number22 index21 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//相機標定</code></div><div class="line number23 index22 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Size boardSize(6, 4);</code></div><div class="line number24 index23 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">Cc.addChessboardPoints(filelist, boardSize);</code></div><div class="line number25 index24 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">Cc.calibrate(image.size());</code></div><div class="line number26 index25 alt1">&nbsp;</div><div class="line number27 index26 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//去畸變</code></div><div class="line number28 index27 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">image = cv::imread(filelist[1]);</code></div><div class="line number29 index28 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat uImage=Cc.remap(image);</code></div><div class="line number30 index29 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::imshow(</code><code class="cpp string">"原影象"</code><code class="cpp plain">, image);</code></div><div class="line number31 index30 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::imshow(</code><code class="cpp string">"去畸變"</code><code class="cpp plain">, uImage);</code></div><div class="line number32 index31 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp comments">//顯示相機內參數矩陣</code></div><div class="line number33 index32 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::Mat cameraMatrix = Cc.getCameraMatrix();</code></div><div class="line number34 index33 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::cout &lt;&lt; </code><code class="cpp string">" Camera intrinsic: "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.rows &lt;&lt; </code><code class="cpp string">"x"</code> <code class="cpp plain">&lt;&lt; cameraMatrix.cols &lt;&lt; std::endl;</code></div><div class="line number35 index34 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::cout &lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(0, 0) &lt;&lt; </code><code class="cpp string">" "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(0, 1) &lt;&lt; </code><code class="cpp string">" "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(0, 2) &lt;&lt; std::endl;</code></div><div class="line number36 index35 alt1"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::cout &lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(1, 0) &lt;&lt; </code><code class="cpp string">" "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(1, 1) &lt;&lt; </code><code class="cpp string">" "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(1, 2) &lt;&lt; std::endl;</code></div><div class="line number37 index36 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">std::cout &lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(2, 0) &lt;&lt; </code><code class="cpp string">" "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(2, 1) &lt;&lt; </code><code class="cpp string">" "</code> <code class="cpp plain">&lt;&lt; cameraMatrix.at&lt;</code><code class="cpp color1 bold">double</code><code class="cpp plain">&gt;(2, 2) &lt;&lt; std::endl;</code></div><div class="line number38 index37 alt1">&nbsp;</div><div class="line number39 index38 alt2"><code class="cpp spaces">&nbsp;&nbsp;</code><code class="cpp plain">cv::waitKey(0);</code></div><div class="line number40 index39 alt1"><code class="cpp plain">}</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p>實驗結果：</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="./00_files/1537997100-1670.jpg"> <br>
+<img title="" alt="這裡寫圖片描述" src="./00_files/1537997101-3099.jpg">&nbsp;<br>
+</p>
+<p>看以看到，相機內參數矩陣為 <br>
+</p>
+<p>172.654 、0、157.829 <br>
+0、184.195、118.635 <br>
+0 、0 、1</p>
+<p>以上就是本文的全部內容，希望對大家的學習有所幫助，也希望大家多多支援itread01.com。</p>          <nav class="pagination group">
+                      </nav><!--/.pagination-->
+        </div>
+ <center><ins id="scupio-sc-4995-17522-26274" class="scupioadslot" style="display: inline-block; width: 300px; height: 250px; position: relative;" data-sca-pub="lRIJBAgyQA==" data-sca-web="4995" data-sca-category="17" data-sca-cid="17522" data-sca-slot-type="PRA" data-sca-status="callback" undefined="1"><iframe name="scupioadframe" marginwidth="0" marginheight="0" frameborder="0" id="scupio-sc-4995-17522-26274_frame" src="./00_files/ad(2).html" style="box-sizing: content-box; overflow: hidden; border: 0px; padding: 0px; margin: 0px; width: 300px; height: 250px; display: none;"></iframe><span id="viewability_detector_17522" style="position: absolute; z-index: -99999; background-color: transparent; left: 50%; top: 50%; width: 1px; height: 1px;"></span><ins class="scupioadslot" data-sca-pub="lRIJBAgyQA==" data-sca-web="4995" data-sca-category="17" data-sca-cid="17523" data-sca-slot-type="STA" data-sca-status="done" undefined="2" style="display: inline-block; width: 300px; height: 250px; margin: auto; position: relative;"><iframe name="scupioadframe" marginwidth="0" marginheight="0" frameborder="0" id="sc-1592447602122-88524194028_frame" src="./00_files/ad(3).html" style="box-sizing: content-box; overflow: hidden; border: 0px; padding: 0px; margin: 0px; width: 300px; height: 250px;"></iframe><span id="viewability_detector_17523" style="position: absolute; z-index: -99999; background-color: transparent; left: 50%; top: 50%; width: 1px; height: 1px;"></span></ins></ins>
+<script async="" src="./00_files/ad.js.下載"></script>
+<script>
+(function(s, c, u, p, i, o, a, d) {
+    'use strict';
+    var z=function(t,e,r){var a,n=document.createElement('ins'),s=n.style;for(a in n.className='scupioadslot',r&&(n.id=r),t)t.hasOwnProperty(a)&&(s[a]=t[a]);for(a in e)e.hasOwnProperty(a)&&n.setAttribute('data-sca-'+a,e[a]);return n};
+    (d = s.Scupioads = s.Scupioads || []).push({
+        id: u,
+        callback: function() {
+            p = c.getElementById(u);
+            i = p.style;
+            o = 'inline-block';
+            p.appendChild(z({
+                display: o,
+                width: '300px',
+                height: '250px',
+                margin: 'auto'
+            }, {
+                'pub': 'lRIJBAgyQA==',
+                'web': '4995',
+                'category': '17',
+                'cid': '17523',
+                'slot-type': 'STA'
+            }));
+            i.width = '300px';
+            i.height = '250px';
+            i.display = o;
+        }
+    });
+    setTimeout(function(){if(!s.Scupioads.init)for(i=d.length-1;0<=i;i--)if(d[i].id===u){d[i].callback(),d[i].callback=function(){};break}},1e3);
+})(window, document, 'scupio-sc-4995-17522-26274');
+</script></center>
+    
+        <div class="clear"></div>
+      </div><!--/.entry-->
+
+    </div><!--/.post-inner-->
+  </article><!--/.post-->
+
+<div class="clear"></div>
+
+<p class="post-tags"><span>標籤：</span> 軟體程式設計 C語言 </p>
+
+ 
+
+<h4 class="heading">
+	<i class="far fa-hand-point-right"></i>您可能也會喜歡…</h4>
+
+ <ul class="lrelated-posts group">
+		 	<li><a href="https://www.itread01.com/article/1525761600.html" target="_blank">Python使用OpenCV進行標定</a> </li>
+    	<li><a href="https://www.itread01.com/article/1488697334.html" target="_blank">Android實現呼叫系統相簿與相機設定頭像並儲存在本地及伺服器</a> </li>
+    	<li><a href="https://www.itread01.com/article/1483921578.html" target="_blank">Android中通過訪問本地相簿或者相機設定使用者頭像例項</a> </li>
+    	<li><a href="https://www.itread01.com/article/1533518174.html" target="_blank">Android 相機相簿許可權設定方法</a> </li>
+    	<li><a href="https://www.itread01.com/article/1527574435.html" target="_blank">android 7自定義相機預覽及拍照功能</a> </li>
+    	<li><a href="https://www.itread01.com/article/1514880543.html" target="_blank">Python+樹莓派+YOLO打造一款人工智慧照相機</a> </li>
+    	<li><a href="https://www.itread01.com/article/1502243846.html" target="_blank">Android 自定義相機及分析原始碼</a> </li>
+    	<li><a href="https://www.itread01.com/article/1497944076.html" target="_blank">Android自定義照相機的例項</a> </li>
+    	<li><a href="https://www.itread01.com/article/1491438331.html" target="_blank">Android 用 camera2 API 自定義相機</a> </li>
+    	<li><a href="https://www.itread01.com/article/1489971650.html" target="_blank">iOS開發-自定義相機例項(仿微信)</a> </li>
+    	<li><a href="https://www.itread01.com/article/1489635061.html" target="_blank">Spring Boot實戰之netty-socketio實現簡單聊天室(給指定使用者推送訊息)</a> </li>
+    	<li><a href="https://www.itread01.com/article/1486436468.html" target="_blank">Android中關於自定義相機預覽介面拉伸問題</a> </li>
+    	<li><a href="https://www.itread01.com/article/1484990111.html" target="_blank">Android自定義相機實現定時拍照功能</a> </li>
+    	<li><a href="https://www.itread01.com/article/1483857637.html" target="_blank">Android使用系統自帶的相機實現一鍵拍照功能</a> </li>
+    	<li><a href="https://www.itread01.com/article/1482301757.html" target="_blank">Android自定義相機實現自動對焦和手動對焦</a> </li>
+    	<li><a href="https://www.itread01.com/article/1479438343.html" target="_blank">Android自定義相機介面的實現程式碼</a> </li>
+    	<li><a href="https://www.itread01.com/article/1471233132.html" target="_blank">Android自定義照相機Camera出現黑屏的解決方法</a> </li>
+    	<li><a href="https://www.itread01.com/article/1470972332.html" target="_blank">Android實用控制元件自定義逼真相機光圈View</a> </li>
+    	<li><a href="https://www.itread01.com/article/1460100154.html" target="_blank">Android自定義照相機詳解</a> </li>
+    	<li><a href="https://www.itread01.com/article/1456209736.html" target="_blank">Android實現從本地相簿/相機拍照後裁剪圖片並設定頭像</a> </li>
+     
+</ul><!--/.post-related-->
+  
+ </div><!--/.pad-->
+        
+        
+
+        </section><!--/.content-->
+          
+
+	<div class="sidebar s1 collapsed" data-position="right" data-layout="col-2cl" data-sb-id="s1" style="transform: translateZ(0px);">
+
+		<a class="sidebar-toggle" title="延伸側邊欄位" style="transform: translate(0px, 0px);"><i class="fas icon-sidebar-toggle"></i></a>
+
+		<div class="sidebar-content" style="transform: translate(0px, 0px);">
+
+			  			<div class="sidebar-top group">
+                        <p>贊助商廣告</p>
+          
+           			</div>
+			
+				<ul class="post-nav group">
+      
+ 
+		<li class="previous"> </li>
+  
+  
+		 <li class="next">  </li>
+ 
+	</ul>
+
+<div id="custom_html-3" class="widget_text widget widget_custom_html"><div class="textwidget custom-html-widget">
+ 
+</div></div><div id="text-7" class="widget widget_text">			 
+		</div>
+        
+        <div id="alxtabs-2" class="widget widget_hu_tabs">
+<h3 class="widget-title"></h3>
+<ul class="alx-tabs-nav group tab-count-3"><li class="alx-tab tab-recent active"><a href="https://www.itread01.com/article/1515554521.html#tab-recent-2" title="熱門文章"><i class="far fa-clock"></i></a></li><li class="alx-tab tab-tags"><a href="https://www.itread01.com/article/1515554521.html#tab-tags-2" title="標籤"><i class="fas fa-star"></i> </a></li></ul>
+	<div class="alx-tabs-container">						
+			<ul id="tab-recent-2" class="alx-tab group" style="display: block;">
+								 
+					      
+                  <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515554686.html">Spring的例項工廠方法和靜態工廠方法例項程式碼 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515554955.html">Android串列埠開發之使用JNI實現ANDROID和串列埠通訊詳解 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515554959.html">python的Tqdm模組的使用 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515555218.html">Spring例項化bean的方式程式碼詳解 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515555330.html">Android開發實現按鈕點選切換背景並修改文字顏色的方法 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515555605.html">Java上傳檔案圖片到伺服器的方法 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515555886.html">web前端vue之CSS過渡效果示例 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515556430.html">js實現上傳並壓縮圖片效果 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515557121.html">Java實現的可選擇及拖拽圖片的面板功能【基於swing元件】 </a></p>
+										</div>
+				</li>
+                
+                
+                 <li>
+					<div class="tab-item-inner group">
+						 						
+                        <p class="tab-item-title"> <a href="https://www.itread01.com/article/1515557717.html">Java實現的按照順時針或逆時針方向輸出一個數字矩陣功能示例 </a></p>
+										</div>
+				</li>
+                
+                
+  	 
+				</ul><!--/.alx-tab-->
+
+			<ul id="tab-tags-2" class="alx-tab group" style="display: none;">
+				<li>
+					<a href="https://www.itread01.com/tags/android/" class="tag-cloud-link tag-link-9 tag-link-position-1" style="font-size: 12.15625pt;">Android</a> 
+					
+					<a href="https://www.itread01.com/infolist/Web%E9%96%8B%E7%99%BC/1/" class="tag-cloud-link tag-link-9 tag-link-position-1" style="font-size: 12.15625pt;">WEB開發</a> 
+					<a href="https://www.itread01.com/infolist/%E5%85%B6%E4%BB%96/1/" class="tag-cloud-link tag-link-9 tag-link-position-1" style="font-size: 12.15625pt;">其它</a> 
+			
+					</li>
+			</ul><!--/.alx-tab-->
+			</div>
+</div>
+		</div><!--/.sidebar-content-->
+	</div><!--/.sidebar-->
+        </div><!--/.main-inner-->
+      </div><!--/.main-->
+    </div><!--/.container-inner-->
+  </div><!--/.container 網站技巧 網路程式設計 軟體程式設計 指令碼專欄 資料庫 作業系統-->
+ <script type="text/javascript" src="./00_files/shBrushJScript.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushJava.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushPerl.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushPhp.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushRuby.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushSql.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushVb.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushPowerShell.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushXml.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushCss.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushBash.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushDelphi.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushPython.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushCSharp.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushPlain.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushScala.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushAS3.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushCpp.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushDiff.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushColdFusion.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushErlang.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushGroovy.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushHaxe.js.下載"></script>
+<script type="text/javascript" src="./00_files/shBrushJavaFX.js.下載"></script>
+    <footer id="footer">
+          <nav class="nav-container group" id="nav-footer" data-menu-id="footer-4" data-menu-scrollable="false">
+                      <!-- <div class="ham__navbar-toggler collapsed" aria-expanded="false">
+          <div class="ham__navbar-span-wrapper">
+            <span class="ham-toggler-menu__span"></span>
+          </div>
+        </div> -->
+        <div class="ham__navbar-toggler-two collapsed" title="Menu" aria-expanded="false">
+          <div class="ham__navbar-span-wrapper">
+            <span class="line line-1"></span>
+            <span class="line line-2"></span>
+            <span class="line line-3"></span>
+          </div>
+        </div>
+                    <div class="nav-text"></div>
+        <div class="nav-wrap">
+          <ul id="menu-top-2" class="nav container group">
+           <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/" rel="nofollow">首頁</a></li>
+		   <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-290"><a href="https://www.itread01.com/study/python-tutorial.html">Python教學</a></li>
+ 
+</ul>        </div>
+      </nav><!--/#nav-footer-->
+    
+    <section class="container" id="footer-bottom">
+      <div class="container-inner">
+
+        <a id="back-to-top" href="https://www.itread01.com/article/1515554521.html#"><i class="fas fa-angle-up"></i></a>
+
+        <div class="pad group">
+
+          <div class="grid one-half">
+                        
+            <div id="copyright">
+                              <p>ITREAD01.COM © 2018. 版權所有。 </p>
+                          </div><!--/#copyright-->
+          </div>
+        </div><!--/.pad-->
+
+      </div><!--/.container-inner-->
+    </section><!--/.container-->
+
+  </footer><!--/#footer-->
+
+</div><!--/#wrapper-->
+
+<!-- Powered by WPtouch: 4.3.27 --><script type="text/javascript" src="./00_files/jQuerySharrre.min.js.下載"></script>
+<script type="text/javascript" src="./00_files/underscore.min.js.下載"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var HUParams = {"_disabled":[],"SmoothScroll":{"Enabled":true,"Options":{"touchpadSupport":false}},"centerAllImg":"1","timerOnScrollAllBrowsers":"1","extLinksStyle":"1","extLinksTargetExt":"1","extLinksSkipSelectors":{"classes":["btn","button"],"ids":[]},"imgSmartLoadEnabled":"","imgSmartLoadOpts":{"parentSelectors":[".container .content",".container .sidebar","#footer","#header-widgets"],"opts":{"excludeImg":[".tc-holder-img"],"fadeIn_options":100}},"goldenRatio":"1.618","gridGoldenRatioLimit":"350","sbStickyUserSettings":{"desktop":true,"mobile":false},"isWPMobile":"","menuStickyUserSettings":{"desktop":"stick_up","mobile":"stick_up"},"isDevMode":"","ajaxUrl":"https:\/\/www.itread01.com\/?huajax=1","frontNonce":{"id":"HuFrontNonce","handle":"d9125fec3b"},"userStarted":{"with":"with|3.3.27","on":{"date":"2018-03-27 03:41:18.000000","timezone_type":3,"timezone":"UTC"}},"isWelcomeNoteOn":"","welcomeContent":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./00_files/scripts.min.js.下載"></script>
+<script type="text/javascript" src="./00_files/wp-embed.min.js.下載"></script>
+
+<!--[if lt IE 9]>
+<script src="/img/css/js/respond.js"></script>
+<![endif]-->
+<div style="display:none"><script type="text/javascript" src="./00_files/c.js.下載"></script><script src="./00_files/z_stat.php" language="JavaScript"></script><script src="./00_files/core.php" charset="utf-8" type="text/javascript"></script><a href="https://www.cnzz.com/stat/website.php?web_id=1275098034" target="_blank" title="站长统计">站长统计</a>
+0.24692988395691</div>
+
+</body></html>

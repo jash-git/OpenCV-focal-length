@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)https://www.oudahe.com/p/46522/ -->
+<html class="translated-ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width , initial-scale=1.0 , user-scalable=0 , minimum-scale=1.0 , maximum-scale=1.0">
+		
+		<script type="text/javascript" defer="" async="" src="./01_files/c.js.下載"></script><script src="./01_files/hm.js.下載"></script><script type="text/javascript" src="https://www.oudahe.com/assets/f5c3d546/jquery.js"></script>
+<title>聊一聊OpenCV相機標定- 編程小技巧</title>
+		<meta name="language" content="zh_cn">
+		<meta name="keywords" content="">
+		<meta name="description" content="相机标定：简单的说，就是获得相机参数的过程。参数如：相机内参数矩阵，投影矩阵，旋转矩阵和平移矩阵等什么叫相机参数？简单的说，将现实世界中的人、物，拍成一张图像（二维）。人或物在世界中的三维坐标，和图...">
+		<link rel="shortcut icon" type="image/x-icon" href="https://www.oudahe.com/favicon.ico" media="screen">
+		<link type="text/css" media="all" href="https://www.oudahe.com/themes/default/styles/css/autoptimize_5.css" rel="stylesheet">
+				<!--[if IE 8]>
+			<link rel="stylesheet" href="/themes/default/styles/css/ie8.css">
+		<![endif]-->
+		<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?63156b01f80d49189cb7b2e5419d432a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script type="text/javascript" src="./01_files/45967.js.下載"></script>	<link type="text/css" rel="stylesheet" charset="UTF-8" href="./01_files/translateelement.css"></head>
+	<body id="top" class="home blog chrome">
+		<div id="top-part">
+			<div id="top-bar" class="navbar navbar-inverse">
+				<div id="logo">
+					<hgroup>
+						<h1 class="logoimg">
+							<a href="https://www.oudahe.com/" title="編程技巧" rel="home"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">編程技巧</font></font></a>
+						</h1>
+					</hgroup>
+				</div>
+				<ul class="nav user-nav">
+					<li class="dropdown">
+						<a title="公眾號:代碼技巧">
+							<span class="text"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">公眾號:代碼技巧</font></font></span>
+						</a>
+					</li>
+					<li class="user-btn user-reg">
+						<a target="_blank" href="http://www.phpxs.com/code/" title="代碼片段">
+							<span class="text"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">代碼片段</font></font></span>
+						</a>
+					</li>
+					<li class="user-btn user-reg">
+						<a target="_blank" href="http://www.phpxs.com/j/" title="編程教程">
+							<span class="text"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">教程</font></font></span>
+						</a>
+					</li>
+					<li class="other-nav">
+						<a target="_blank" href="https://www.oudahe.com/tag/" title="全部標籤">
+							<i class="fa fa-heart fa-fw"></i>
+							<span class="text"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+								標籤
+							</font></font></span>
+						</a>
+					</li>
+					<li id="qq" class="other-nav"><a target="_blank" href="tencent://message/?uin=2292242034&amp;Site=PHP%E6%96%B0%E6%89%8B&amp;Menu=yes"><img border="0" src="https://www.oudahe.com/themes/default/styles/images/qq.gif" width="77" height="22" alt="點擊這裡給站長發消息" title="點擊這裡給站長發消息"></a></li>
+				</ul>
+				<div id="search">
+					<div class="toggle-search">
+						<i class="fa fa-search fa-white fa-fw">
+						</i>
+					</div>
+					<div class="search-expand">
+						<div class="search-expand-inner">
+							<form method="get" class="searchform themeform" action="https://www.oudahe.com/s/" target="_blank">
+								<div>
+                                    <input type="text" class="search" name="k" placeholder="累積編程技巧數據50多萬">
+									<button type="submit" id="submit-bt" title="搜索">
+										<i class="fa fa-search"></i>
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<header id="header" role="banner">
+				<nav id="main-nav" role="navigation">
+					<a href="https://www.oudahe.com/p/46522/#" class="visible-phone">
+						<i class="fa fa-align-justify fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+						導航菜單
+					</font></font></a>
+					<ul>
+												<li class="">
+							<a href="https://www.oudahe.com/p/ios/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">iOS 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/android/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Android 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/php/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PHP 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/java/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Java 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/web/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Web 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/server/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">服務器與運維小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/data/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">數據庫操作小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/ui/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">UI/UE設計小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/programmer/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">程序員成長之路							</font></font></a>
+						</li>	
+												<li class="current-menu-item">
+							<a href="https://www.oudahe.com/p/pl/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">編程語言開發技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/python/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Python 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/ajax/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Ajax 實例小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/ruby/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Ruby 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/go/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Golang 開發小技巧							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/regex/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">正則表達式大全							</font></font></a>
+						</li>	
+												<li class="">
+							<a href="https://www.oudahe.com/p/csharp/">
+								<i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C# 開發小技巧							</font></font></a>
+						</li>	
+							
+					</ul>
+					<div class="clear">
+					</div>
+				</nav>
+			</header>
+		</div>
+<!-- 内容main开始 -->
+	<div id="main-content">
+<div id="content-header">
+	<div id="breadcrumb">
+		<a itemprop="breadcrumb" href="https://www.oudahe.com/" title="" class="tip-bottom" data-original-title="返回首页"><i class="fa fa-home fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">首頁</font></font></a><i class="fa fa-angle-right fa-fw"></i>
+		<a itemprop="breadcrumb" href="https://www.oudahe.com/p/pl/" title="" class="tip-bottom" data-original-title="编程语言开发技巧"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">編程語言開發技巧</font></font></a><i class="fa fa-angle-right fa-fw"></i><span class="current"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">正文</font></font></span>
+	</div>
+</div>
+<div class="container-fluid">
+	<!--<div class="row-fluid gsfha3">
+		<div class="span6">
+			<img src="/public/images/ad200.png" alt="代码技巧">
+		</div>
+		<div class="span6">
+			<img src="/public/images/ad100.png" alt="广告招租">
+		</div>
+	</div>-->
+	<div class="row-fluid">
+		<div class="span8">
+			<div class="widget-box">
+				<article id="post-2625" class="widget-content single-post">
+                    <header id="post-header">
+                        <h1 class="post-title" itemprop="headline"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">聊一聊OpenCV相機標定</font></font></h1>
+                        <div class="clear">
+                        </div>
+                        <p class="post-meta">
+                            <span class="time"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2018.01.13</font></font></span>
+                                                        <span class="time"><i class="fa fa-book fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">檢索: </font></font><a href="https://www.oudahe.com/tag//"></a></span>
+                        </p>
+                        <div class="clear"></div>
+                    </header>
+                    <div class="2017926 entry" itemprop="articleBody">
+                        <p><strong><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">相機標定：簡單的說，就是獲得相機參數的過程。</font><font style="vertical-align: inherit;">參數如：相機內參數矩陣，投影矩陣，旋轉矩陣和平移矩陣等</font></font></strong></p>
+<p><strong><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">什麼叫相機參數？</font></font></strong></p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">簡單的說，將現實世界中的人、物，拍成一張圖像（二維）。</font><font style="vertical-align: inherit;">人或物在世界中的三維坐標，和圖像上對應的二維坐標間的關係。</font><font style="vertical-align: inherit;">表達兩種不同維度坐標間的關係用啥表示？</font><font style="vertical-align: inherit;">用相機參數。</font></font></p>
+<p><span style="color: #800000"><strong><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">相機的成像原理</font></font></strong></span></p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">先來看一下，相機的成像原理： </font></font><br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520091.jpg">&nbsp;<br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">如圖所示，這是一個相機模型。</font><font style="vertical-align: inherit;">將物體簡化看成一個點。</font><font style="vertical-align: inherit;">來自物體的光，通過鏡頭，擊中圖像平面（圖像傳感器），以此成像。</font><font style="vertical-align: inherit;">d0是物體到鏡頭的距離，di時鏡頭到圖像平面的距離，f是鏡頭的焦距。</font><font style="vertical-align: inherit;">三者滿足以下關係。</font></font><br>
+</p>
+<p style="text-align: left"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520092.jpg">&nbsp;</p>
+<p><strong><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">現在，簡化上面的相機模型。</font></font></strong> <br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">將相機孔徑看成無窮小，只考慮中心位置的射線，這樣就忽視了透鏡的影響。</font><font style="vertical-align: inherit;">然後由於d0遠遠大於di，將圖像平面放在焦距處，這樣物體在圖像平面上成像為倒立的影像（沒有透鏡的影響，只考慮從中心的孔徑進入的光線）。</font><font style="vertical-align: inherit;">這個簡化的模型就是針孔攝像機模型。</font><font style="vertical-align: inherit;">然後，我們在鏡頭前，將圖像平面放在焦距距離的位置，就可以簡單獲得一個筆直的圖像（不倒立）。</font><font style="vertical-align: inherit;">當然，這只是理論上的，你不可能將圖像傳感器從相機裡拿出來，放在鏡頭前面。</font><font style="vertical-align: inherit;">實際應用中，針孔攝像機應該是將成像後的圖像倒過來，以獲得正立的圖像。</font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+到此，我們獲得了一個簡化的模型，如下圖：</font></font><br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520103.jpg">&nbsp;<br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">h0是物體的高，hi是圖像上物體的高，f是焦距（距離），d0是圖像到鏡頭的距離。</font><font style="vertical-align: inherit;">四者滿足如下關係：</font></font><br>
+</p>
+<p><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520104.jpg"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">（1） </font></font><br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">物體在圖像中的高度hi，和d0成反比。</font><font style="vertical-align: inherit;">也就是說，離鏡頭越遠，物體在圖像中越小，離得越近越大（好吧，這句話是廢話）。</font></font><br>
+<strong><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">但通過這個式子，我們便能夠預測三維中的物體，在圖像（二維）中的位置。</font><font style="vertical-align: inherit;">那麼怎麼預測？</font></font></strong></p>
+<p><span style="color: #800000"><strong><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">相機標定</font></font></strong></span></p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">如下圖所示，根據上面簡化的模型，考慮三維世界中的一個點，和其在圖像（二維）中的坐標關係。 </font></font><br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520105.jpg">&nbsp;<br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">（X，Y，Z）為點的三維坐標，（x，y）為其通過相機成像後在圖像（二維）上的坐標。</font><font style="vertical-align: inherit;">u0和v0是相機的中心點（主點)，該點位於圖像平面中心（理論上是這樣。但實際的相機會有幾個像素的偏差）</font></font><br><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+現在只考慮y方向上，由於需要將三維世界中的坐標，轉換為圖像上的像素（圖像上的坐標，實際上是像素的位置），需要求y方向上焦距等於多少個像素（用像素值表示焦距），Py表示像素的高，焦距f（米或毫米）。</font><font style="vertical-align: inherit;">垂直像素表示的焦距為</font></font></p>
+<p><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520116.jpg"> <br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">根據式子（1），只考慮y方向。</font><font style="vertical-align: inherit;">我們三維世界中得點，在圖像（二維）中y的坐標。</font></font><br>
+</p>
+<p><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520117.jpg">&nbsp;<br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">同理，得到x的坐標。 </font></font><br>
+</p>
+<p><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520118.jpg">&nbsp;<br>
+</p>
+<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">現在，將上圖中的坐標系的原點O，移動到圖像的左上角。</font><font style="vertical-align: inherit;">由於（x，y）是關於（u0，v0）的偏移，上面表示圖像（二維）中點的坐標的式子不變。</font><font style="vertical-align: inherit;">將式子以矩陣的形式重寫，得。</font></font><br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/15158520119.jpg">&nbsp;<br>
+</p>
+<p>其中，等式左边的第一个矩阵，叫做“相机内参数矩阵”，第二个矩阵叫（投影矩阵）。</p>
+<p>更为一般的情况，开始时的参考坐标系不位于主点（中心点），需要额外两个参数“旋转向量”和“平移向量”来表示这个式子，这两个参数在不同视角中是不一样的。整合后，上述式子重写为。 <br>
+</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/151585201210.jpg"></p>
+<p><span style="color: #800000"><strong>校正畸变 </strong></span><br>
+</p>
+<p>通过相机标定，获得了相机参数后，可以计算两个映射函数（x坐标和y坐标），它们分别给出了没有畸变的图像坐标。将畸变的图像重新映射成为没有畸变的图像。</p>
+<p><strong>代码：</strong></p>
+<p>做相机标定时，一般用标定板(棋盘）拍摄一组图像，利用这些图像提取角点，通过角点在图像中得坐标和三维世界中的坐标（通常自定义3维坐标），计算相机参数。</p>
+<div class="p_code">
+<pre class="brush:cpp;">std::vector&lt;cv::Point2f&gt;imageConers;<font></font>
+//提取标定图像角点，保存角点坐标（二维）<font></font>
+ cv::findChessboardCorners(image,<font></font>
+ boardSize, //角点数目如（6,4）六行，四列<font></font>
+ imageConers);<font></font>
+<font></font>
+<font></font>
+</pre>
+</div>
+<p>函数calibrateCamera完成相机标定工作。</p>
+<div class="p_code">
+<pre class="brush:cpp;">cv::calibrateCamera(objectPoints,//三维坐标<font></font>
+ imagePoints, //二维坐标<font></font>
+ imageSize,//图像大小<font></font>
+ camerMatirx,//相机内参数矩阵<font></font>
+ disCoeffs,//投影矩阵<font></font>
+ rvecs, //旋转<font></font>
+ tvecs,//平移<font></font>
+flag //标记opencv提供几种参数，可以参看在线的opencv document<font></font>
+);</pre>
+</div>
+<p>计算畸变参数，去畸变</p>
+<div class="p_code">
+<pre class="brush:cpp;">//计算畸变参数<font></font>
+cv::initUndistortRectifyMap(camerMatirx, disCoeffs,<font></font>
+  cv::Mat(), cv::Mat(), image.size(), CV_32FC1, <font></font>
+  map1, //x映射函数<font></font>
+  map2 //y映射函数<font></font>
+  );<font></font>
+//应用映射函数<font></font>
+cv::remap(image, //畸变图像<font></font>
+undistorted, //去畸变图像<font></font>
+map1, map2, cv::INTER_LINEAR);<font></font>
+<font></font>
+<font></font>
+</pre>
+</div>
+<p>现在整合代码。</p>
+<p>示例：<br>
+</p>
+<p>标头.h</p>
+<div class="p_code">
+<pre class="brush:cpp;">#include&lt;opencv2\core\core.hpp&gt;<font></font>
+#include&lt;opencv2\highgui\highgui.hpp&gt;<font></font>
+#include&lt;opencv2\imgproc\imgproc.hpp&gt;<font></font>
+#include&lt;opencv2\calib3d\calib3d.hpp&gt;<font></font>
+#include &lt;opencv2/features2d/features2d.hpp&gt;<font></font>
+#include&lt;string&gt;<font></font>
+#include&lt;vector&gt;<font></font>
+class CameraCalibrator<font></font>
+{<font></font>
+private:<font></font>
+  //世界坐标<font></font>
+  std::vector &lt; std::vector&lt;cv::Point3f &gt;&gt; objectPoints;<font></font>
+  //图像坐标<font></font>
+  std::vector &lt;std::vector&lt;cv::Point2f&gt;&gt; imagePoints;<font></font>
+  //输出矩阵<font></font>
+  cv::Mat camerMatirx;<font></font>
+  cv::Mat disCoeffs;<font></font>
+  //标记<font></font>
+  int flag;<font></font>
+  //去畸变参数<font></font>
+  cv::Mat map1, map2;<font></font>
+  //是否去畸变<font></font>
+  bool mustInitUndistort;<font></font>
+<font></font>
+  ///保存点数据<font></font>
+  void addPoints(const std::vector&lt;cv::Point2f&gt;&amp;imageConers, const std::vector&lt;cv::Point3f&gt;&amp;objectConers)<font></font>
+  {<font></font>
+    imagePoints.push_back(imageConers);<font></font>
+    objectPoints.push_back(objectConers);<font></font>
+  }<font></font>
+public:<font></font>
+  CameraCalibrator() :flag(0), mustInitUndistort(true){}<font></font>
+  //打开棋盘图片，提取角点<font></font>
+  int addChessboardPoints(const std::vector&lt;std::string&gt;&amp;filelist,cv::Size &amp;boardSize)<font></font>
+  {<font></font>
+    std::vector&lt;cv::Point2f&gt;imageConers;<font></font>
+    std::vector&lt;cv::Point3f&gt;objectConers;<font></font>
+    //输入角点的世界坐标<font></font>
+    for (int i = 0; i &lt; boardSize.height; i++)<font></font>
+    {<font></font>
+      for (int j = 0; j &lt; boardSize.width; j++)<font></font>
+      {<font></font>
+        objectConers.push_back(cv::Point3f(i, j, 0.0f));<font></font>
+      }<font></font>
+    }<font></font>
+    //计算角点在图像中的坐标<font></font>
+    cv::Mat image;<font></font>
+    int success = 0;<font></font>
+    for (int i = 0; i &lt; filelist.size(); i++)<font></font>
+    {<font></font>
+      image = cv::imread(filelist[i],0);<font></font>
+      //找到角点坐标<font></font>
+      bool found = cv::findChessboardCorners(image, boardSize, imageConers);<font></font>
+      cv::cornerSubPix(image, <font></font>
+        imageConers,<font></font>
+        cv::Size(5, 5),<font></font>
+        cv::Size(-1, -1),<font></font>
+        cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS,<font></font>
+        30, 0.1));<font></font>
+      if (imageConers.size() == boardSize.area())<font></font>
+      {<font></font>
+        addPoints(imageConers, objectConers);<font></font>
+        success++;<font></font>
+      }<font></font>
+      //画出角点<font></font>
+      cv::drawChessboardCorners(image, boardSize, imageConers, found);<font></font>
+      cv::imshow("Corners on Chessboard", image);<font></font>
+      cv::waitKey(100);<font></font>
+    }<font></font>
+    return success;<font></font>
+  }<font></font>
+<font></font>
+  //相机标定<font></font>
+  double calibrate(cv::Size&amp;imageSize)<font></font>
+  {<font></font>
+    mustInitUndistort = true;<font></font>
+    std::vector&lt;cv::Mat&gt;rvecs, tvecs;<font></font>
+    //相机标定<font></font>
+    return cv::calibrateCamera(objectPoints, imagePoints, imageSize,<font></font>
+      camerMatirx, disCoeffs, rvecs, tvecs, flag);<font></font>
+  }<font></font>
+  ///去畸变<font></font>
+  cv::Mat remap(const cv::Mat &amp;image)<font></font>
+  {<font></font>
+    cv::Mat undistorted;<font></font>
+    if (mustInitUndistort)<font></font>
+    {<font></font>
+      //计算畸变参数<font></font>
+      cv::initUndistortRectifyMap(camerMatirx, disCoeffs,<font></font>
+        cv::Mat(), cv::Mat(), image.size(), CV_32FC1, map1, map2);<font></font>
+      mustInitUndistort = false;<font></font>
+    }<font></font>
+    //应用映射函数<font></font>
+    cv::remap(image, undistorted, map1, map2, cv::INTER_LINEAR);<font></font>
+    return undistorted;<font></font>
+  }<font></font>
+  //常成员函数，获得相机内参数矩阵、投影矩阵数据<font></font>
+  cv::Mat getCameraMatrix() const { return camerMatirx; }<font></font>
+  cv::Mat getDistCoeffs()  const { return disCoeffs; }<font></font>
+};<font></font>
+</pre>
+</div>
+<p>源.cpp</p>
+<div class="p_code">
+<pre class="brush:cpp;">#include"标头.h"<font></font>
+#include&lt;iomanip&gt;<font></font>
+#include&lt;iostream&gt;<font></font>
+int main()<font></font>
+{<font></font>
+  CameraCalibrator Cc;<font></font>
+  cv::Mat image;<font></font>
+  std::vector&lt;std::string&gt; filelist;<font></font>
+  cv::namedWindow("Image");<font></font>
+  for (int i = 1; i &lt;= 22; i++)<font></font>
+  {<font></font>
+    ///读取图片<font></font>
+    std::stringstream s;<font></font>
+    s &lt;&lt; "D:/images/chessboards/chessboard" &lt;&lt; std::setw(2) &lt;&lt; std::setfill('0') &lt;&lt; i &lt;&lt; ".jpg";<font></font>
+    std::cout &lt;&lt; s.str() &lt;&lt; std::endl;<font></font>
+<font></font>
+    filelist.push_back(s.str());<font></font>
+    image = cv::imread(s.str(),0);<font></font>
+    cv::imshow("Image", image);<font></font>
+    cv::waitKey(100);<font></font>
+  }<font></font>
+  //相机标定<font></font>
+  cv::Size boardSize(6, 4);<font></font>
+  Cc.addChessboardPoints(filelist, boardSize);<font></font>
+  Cc.calibrate(image.size());<font></font>
+<font></font>
+  //去畸变<font></font>
+  image = cv::imread(filelist[1]);<font></font>
+  cv::Mat uImage=Cc.remap(image);<font></font>
+  cv::imshow("原图像", image);<font></font>
+  cv::imshow("去畸变", uImage);<font></font>
+  //显示相机内参数矩阵<font></font>
+  cv::Mat cameraMatrix = Cc.getCameraMatrix();<font></font>
+  std::cout &lt;&lt; " Camera intrinsic: " &lt;&lt; cameraMatrix.rows &lt;&lt; "x" &lt;&lt; cameraMatrix.cols &lt;&lt; std::endl;<font></font>
+  std::cout &lt;&lt; cameraMatrix.at&lt;double&gt;(0, 0) &lt;&lt; " " &lt;&lt; cameraMatrix.at&lt;double&gt;(0, 1) &lt;&lt; " " &lt;&lt; cameraMatrix.at&lt;double&gt;(0, 2) &lt;&lt; std::endl;<font></font>
+  std::cout &lt;&lt; cameraMatrix.at&lt;double&gt;(1, 0) &lt;&lt; " " &lt;&lt; cameraMatrix.at&lt;double&gt;(1, 1) &lt;&lt; " " &lt;&lt; cameraMatrix.at&lt;double&gt;(1, 2) &lt;&lt; std::endl;<font></font>
+  std::cout &lt;&lt; cameraMatrix.at&lt;double&gt;(2, 0) &lt;&lt; " " &lt;&lt; cameraMatrix.at&lt;double&gt;(2, 1) &lt;&lt; " " &lt;&lt; cameraMatrix.at&lt;double&gt;(2, 2) &lt;&lt; std::endl;<font></font>
+<font></font>
+  cv::waitKey(0);<font></font>
+}<font></font>
+</pre>
+</div>
+<p>实验结果：</p>
+<p style="text-align: center"><img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/151585201211.jpg"> <br>
+<img title="" alt="這裡寫圖片描述" src="https://www.oudahe.com/uploads/201801/13/151585201312.jpg">&nbsp;<br>
+</p>
+<p>看以看到，相机内参数矩阵为 <br>
+</p>
+<p>172.654 、0、157.829 <br>
+0、184.195、118.635 <br>
+0 、0 、1</p>
+<p>以上就是本文的全部内容，希望对大家的学习有所帮助，也希望大家多多支持编程小技巧。</p>
+            
+            <div class="art_xg">
+<h4>您可能感兴趣的文章:</h4><ul><li><a href="https://www.oudahe.com/article/63103.htm" title="在樹莓派2或樹莓派B+上安裝Python和OpenCV的教程" target="_blank">在树莓派2或树莓派B+上安装Python和OpenCV的教程</a></li><li><a href="https://www.oudahe.com/article/85321.htm" title="visual studio 2012安裝配置方法圖文教程附opencv配置教程" target="_blank"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">visual studio 2012安裝配置方法圖文教程附opencv配置教程</font></font></a></li><li><a href="https://www.oudahe.com/article/48916.htm" title="使用opencv拉伸圖像擴大分辨率示例" target="_blank"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用opencv拉伸圖像擴大分辨率示例</font></font></a></li><li><a href="https://www.oudahe.com/article/48914.htm" title="實現opencv圖像裁剪分屏顯示示例" target="_blank"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">實現opencv圖像裁剪分屏顯示示例</font></font></a></li><li><a href="https://www.oudahe.com/article/108943.htm" title="Opencv2.4.13與Visual Studio2013環境搭建配置教程" target="_blank"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Opencv2.4.13與Visual Studio2013環境搭建配置教程</font></font></a></li></ul>
+</div>						<p><a href="https://www.oudahe.com/p/37528/"><img src="https://www.oudahe.com/public/images/ad100.png" alt="代碼技巧"></a></p>
+                        <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">轉載請關注公眾號:代碼技巧回复:授權</font></font></p>
+						<p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">本文鏈接地址: </font></font><a href="https://www.oudahe.com/p/46522/" rel="bookmark" title="聊一聊OpenCV相機標定"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">https://www.oudahe.com/p/46522/</font></font></a></p>
+                    </div>
+
+                    <footer class="entry-meta" style="overflow: hidden;">
+                        <p class="post-tag"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                            標籤：
+                                                        </font></font><a href="https://www.oudahe.com/tag//" rel="tag" target="_blank"></a>
+                                                    </p>
+                    </footer>
+				</article>
+			</div>
+		</div>
+		<!--右侧-->
+                <aside class="span4 sidebar-right hide-sidebar" role="complementary">
+            <div id="wpfp-most_favorited_posts" class="widget-box widget wpfp_widget_view">
+                <div class="widget-title"><span class="icon"><i class="fa fa-list fa-fw"></i></span><h3><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">看看這些是不是您想找的</font></font></h3></div>
+                <div class="widget-content">
+                    <ul>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">06.28</font></font></span><a href="https://www.oudahe.com/p/31955/" title="詳解桶排序算法的思路及C++編程中的代碼實現"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">詳解桶排序算法的思路及C++編程中的代碼實現</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.19</font></font></span><a href="https://www.oudahe.com/p/31144/" title="C語言動態內存分配的詳解"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言動態內存分配的詳解</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.05</font></font></span><a href="https://www.oudahe.com/p/32662/" title="在Visual Studio使用C++開發Metro應用"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">在Visual Studio使用C++開發Metro應用</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">12.24</font></font></span><a href="https://www.oudahe.com/p/31670/" title="使用C/C++語言生成一個隨機迷宮遊戲"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用C/C++語言生成一個隨機迷宮遊戲</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">06.22</font></font></span><a href="https://www.oudahe.com/p/31228/" title="利用C語言編輯畫圖程序的實現方法(推薦)"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">利用C語言編輯畫圖程序的實現方法(推薦)</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">02.03</font></font></span><a href="https://www.oudahe.com/p/32260/" title="利用簡潔的C語言代碼解決跳台階問題與約瑟夫環問題"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">利用簡潔的C語言代碼解決跳台階問題與約瑟夫環問題</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">01.10</font></font></span><a href="https://www.oudahe.com/p/32293/" title="Mac OS上搭建Apache+PHP+MySQL開發環境的詳細教程"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Mac OS上搭建Apache+PHP+MySQL開發環境的詳細教程</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">06.28</font></font></span><a href="https://www.oudahe.com/p/31946/" title="for循環中刪除map中的元素valgrind檢測提示error：Invalid read of size 8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">for循環中刪除map中的元素valgrind檢測提示error：Invalid read of size 8</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.31</font></font></span><a href="https://www.oudahe.com/p/31088/" title="利用C++如何覆蓋或刪除指定位置的文件內容"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">利用C++如何覆蓋或刪除指定位置的文件內容</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.13</font></font></span><a href="https://www.oudahe.com/p/32649/" title="C語言讀寫配置文件的方法"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言讀寫配置文件的方法</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.10</font></font></span><a href="https://www.oudahe.com/p/32657/" title="C語言實現的階乘，排列和組合實例"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言實現的階乘，排列和組合實例</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">08.20</font></font></span><a href="https://www.oudahe.com/p/32553/" title="C語言中的strdup()函數和其與strcpy()函數的區別"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言中的strdup()函數和其與strcpy()函數的區別</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">08.26</font></font></span><a href="https://www.oudahe.com/p/31847/" title="用C語言的泛型實現交換兩個變量值"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">用C語言的泛型實現交換兩個變量值</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">08.19</font></font></span><a href="https://www.oudahe.com/p/32518/" title="在C語言中對utmp文件進行查找和寫入操作的函數小結"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">在C語言中對utmp文件進行查找和寫入操作的函數小結</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">12.20</font></font></span><a href="https://www.oudahe.com/p/31655/" title="c++ 類中const成員變量的賦值方法"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">c++ 類中const成員變量的賦值方法</font></font></a></li>
+                                        <li style="font-weight: bold;color: red;font-size: 18px;"><i class="fa fa-eye"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">關注代碼技巧回复19領350本編程書籍</font></font></li>
+                    <li><img src="https://www.oudahe.com/themes/default/styles/images/daimajiqiao.jpg" alt="代碼技巧"></li>
+                    </ul>
+                </div>
+            </div>
+        <div class="rightRoller" style="position: fixed; top: 60px; z-index: 0; width: 466px; display: none;"><div id="wpfp-most_favorited_posts" class="widget-box widget wpfp_widget_view">
+                <div class="widget-title"><span class="icon"><i class="fa fa-list fa-fw"></i></span><h3><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">看看這些是不是您想找的</font></font></h3></div>
+                <div class="widget-content">
+                    <ul>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">06.28</font></font></span><a href="https://www.oudahe.com/p/31955/" title="詳解桶排序算法的思路及C++編程中的代碼實現"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">詳解桶排序算法的思路及C++編程中的代碼實現</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.19</font></font></span><a href="https://www.oudahe.com/p/31144/" title="C語言動態內存分配的詳解"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言動態內存分配的詳解</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.05</font></font></span><a href="https://www.oudahe.com/p/32662/" title="在Visual Studio使用C++開發Metro應用"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">在Visual Studio使用C++開發Metro應用</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">12.24</font></font></span><a href="https://www.oudahe.com/p/31670/" title="使用C/C++語言生成一個隨機迷宮遊戲"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">使用C/C++語言生成一個隨機迷宮遊戲</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">06.22</font></font></span><a href="https://www.oudahe.com/p/31228/" title="利用C語言編輯畫圖程序的實現方法(推薦)"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">利用C語言編輯畫圖程序的實現方法(推薦)</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">02.03</font></font></span><a href="https://www.oudahe.com/p/32260/" title="利用簡潔的C語言代碼解決跳台階問題與約瑟夫環問題"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">利用簡潔的C語言代碼解決跳台階問題與約瑟夫環問題</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">01.10</font></font></span><a href="https://www.oudahe.com/p/32293/" title="Mac OS上搭建Apache+PHP+MySQL開發環境的詳細教程"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Mac OS上搭建Apache+PHP+MySQL開發環境的詳細教程</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">06.28</font></font></span><a href="https://www.oudahe.com/p/31946/" title="for循環中刪除map中的元素valgrind檢測提示error：Invalid read of size 8"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">for循環中刪除map中的元素valgrind檢測提示error：Invalid read of size 8</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.31</font></font></span><a href="https://www.oudahe.com/p/31088/" title="利用C++如何覆蓋或刪除指定位置的文件內容"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">利用C++如何覆蓋或刪除指定位置的文件內容</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.13</font></font></span><a href="https://www.oudahe.com/p/32649/" title="C語言讀寫配置文件的方法"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言讀寫配置文件的方法</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">07.10</font></font></span><a href="https://www.oudahe.com/p/32657/" title="C語言實現的階乘，排列和組合實例"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言實現的階乘，排列和組合實例</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">08.20</font></font></span><a href="https://www.oudahe.com/p/32553/" title="C語言中的strdup()函數和其與strcpy()函數的區別"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">C語言中的strdup()函數和其與strcpy()函數的區別</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">08.26</font></font></span><a href="https://www.oudahe.com/p/31847/" title="用C語言的泛型實現交換兩個變量值"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">用C語言的泛型實現交換兩個變量值</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">08.19</font></font></span><a href="https://www.oudahe.com/p/32518/" title="在C語言中對utmp文件進行查找和寫入操作的函數小結"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">在C語言中對utmp文件進行查找和寫入操作的函數小結</font></font></a></li>
+                                        <li class="most-favorited"><span class="fav-num"><i class="fa fa-clock-o fa-fw"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">12.20</font></font></span><a href="https://www.oudahe.com/p/31655/" title="c++ 類中const成員變量的賦值方法"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">c++ 類中const成員變量的賦值方法</font></font></a></li>
+                                        <li style="font-weight: bold;color: red;font-size: 18px;"><i class="fa fa-eye"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">關注代碼技巧回复19領350本編程書籍</font></font></li>
+                    <li><img src="https://www.oudahe.com/themes/default/styles/images/daimajiqiao.jpg" alt="代碼技巧"></li>
+                    </ul>
+                </div>
+            </div></div></aside>
+	</div>
+</div>
+</div>
+<script type="text/javascript" src="https://www.oudahe.com/themes/default/styles/js/copyhtml.js"></script>   <!-- 内容main结束 -->
+<footer id="footer" class="row-fluid">
+	<div class="span12 footer-nav">
+		<ul>
+			<li>
+				<a target="_blank" href="http://www.phpxs.com/"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">編程學習網</font></font></a>
+			</li>
+			<li>
+				<a target="_blank" href="http://www.phpxs.com/code/"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">片段代碼</font></font></a>
+			</li>
+			<li>
+				<a rel="nofollow" href="tencent://message/?uin=2292242034&amp;Site=PHP%E6%96%B0%E6%89%8B&amp;Menu=yes"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">申請友鏈QQ:2292242034</font></font></a>
+			</li>
+		</ul>
+	</div>
+	<div class="span12 footer-info">
+		<p>
+			<a href="http://www.miitbeian.gov.cn/" target="_blank"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">©粵ICP備14088065號-2</font></font></a><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> Copyright @ 2015-2020 </font></font><a rel="nofollow" href="https://www.oudahe.com/page/index/id/disclaimer/"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">免責聲明</font></font></a>&nbsp; <a rel="nofollow" title="編程小技巧" href="https://www.oudahe.com/"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">編程小技巧</font></font></a>
+		</p>
+	</div>
+</footer>
+<div class="returnTop" title="返回頂部" style="display: none;">
+	<span class="s">
+	</span>
+	<span class="b">
+	</span><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+	返回頂部"
+</font></font></div>
+<script type="text/javascript" defer="" src="https://www.oudahe.com/themes/default/styles/js/autoptimize.js"></script>
+
+
+<iframe name="0" height="0" width="0" src="./01_files/mediav0308.html" style="display: none;"></iframe><div id="goog-gt-tt" class="skiptranslate" dir="ltr"><div style="padding: 8px;"><div><div class="logo"><img src="./01_files/translate_24dp.png" width="20" height="20" alt="Google 翻譯"></div></div></div><div class="top" style="padding: 8px; float: left; width: 100%;"><h1 class="title gray">原文</h1></div><div class="middle" style="padding: 8px;"><div class="original-text"></div></div><div class="bottom" style="padding: 8px;"><div class="activity-links"><span class="activity-link">建議更好的譯法</span><span class="activity-link"></span></div><div class="started-activity-container"><hr style="color: #CCC; background-color: #CCC; height: 1px; border: none;"><div class="activity-root"></div></div></div><div class="status-message" style="display: none;"></div></div><iframe name="0" height="0" width="0" src="./01_files/proxy.html" style="display: none;"></iframe><div class="goog-te-spinner-pos"><div class="goog-te-spinner-animation"><svg xmlns="http://www.w3.org/2000/svg" class="goog-te-spinner" width="96px" height="96px" viewBox="0 0 66 66"><circle class="goog-te-spinner-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg></div></div></body></html>

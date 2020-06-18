@@ -1,0 +1,268 @@
+(function() {
+    if (/iPhone|ipod/i.test(navigator.userAgent) || /iPad/i.test(navigator.userAgent)) {
+        var efp = document.createElement("script");
+        efp.src = "//cdn.doublemax.net/js/efp.js";
+        efp.type = "text/javascript";
+        if (document.getElementsByTagName("head").length > 0) {
+            document.getElementsByTagName("head")[0].appendChild(efp)
+        } else {
+            if (document.getElementsByTagName("body").length > 0) {
+                document.getElementsByTagName("body")[0].appendChild(efp)
+            }
+        } 
+    }
+});
+
+function c_tag_mk(tag,url,async) {
+    if(tag == "img"){
+        var c = document.createElement("img");
+        c.setAttribute('style', 'display:none');
+        c.setAttribute('height', '0');
+        c.setAttribute('width', '0');
+        c.src = url;
+        document.body.appendChild(c);
+    }else if(tag == "iframe"){
+        var c = document.createElement("iframe");     
+        c.setAttribute('style', 'display:none');
+        c.setAttribute('height', '0');
+        c.setAttribute('width', '0');
+        c.src = url;
+        document.body.appendChild(c);        
+    }else{
+        var c = document.createElement("script");
+        c.type = "text/javascript";
+        c.src = url;
+        if(async){
+            c.async = true;
+        }
+        if (document.getElementsByTagName("head").length > 0) {
+            document.getElementsByTagName("head")[0].appendChild(c);
+        } else if (document.getElementsByTagName("body").length > 0) {       
+            document.getElementsByTagName("body")[0].appendChild(c);
+        }        
+    }
+}
+
+function cookie_mapping(target_url) {
+var t = "//dmp.eland-tech.com/dmpreceiver/cookie_transfer.jsp?target=" + target_url;
+var c = document.createElement("iframe");
+c.src = t;
+c.setAttribute('style', 'display:none');
+c.setAttribute('height', '0');
+c.setAttribute('width', '0');
+document.body.appendChild(c);
+}
+function getOS(userAgent) {
+    if (userAgent.match(/Windows Phone/i)) {
+        return "WindowsPhone";
+    } else if (userAgent.match(/Android/i)) {
+        return "Android";
+    } else if (userAgent.match(/iPhone|iPad|iPod/i)) {
+        return "iOS";
+    } else if (userAgent.match(/Windows NT/i)) {
+        return "Windows";
+    } else if (userAgent.match(/Macintosh/i)) {
+        return "MacOS";
+    } else {
+        return "Others";
+    }
+}
+function getBrowser(userAgent) {
+    if (userAgent.match(/IEMobile/i)) {
+        return "IEMobile";
+    } else if (userAgent.match(/Edge/i)) {
+        return "Edge";
+    } else if (userAgent.match(/Chrome/i) && userAgent.match(/Safari/i)) {
+        return "Chrome";
+    } else if (userAgent.match(/Firefox/i)) {
+        return "Firefox";
+    } else if (userAgent.match(/Safari/i)) {
+        return "Safari";
+    } else if (userAgent.match(/.NET/i)) {
+        return "IE";
+    } else if (userAgent.match(/Opera/i)) {
+        return "Opera";
+    } else if (userAgent.match(/Chrome/i)) {
+        return "Chrome";
+    } else {
+        return "Others";
+    }
+}
+
+function htmlEscape(str) {
+    return str.toLowerCase()
+        .replace(">", "").replace("<", "").replace(";", "")
+        .replace("script", "").replace("alert", "")
+        .replace("img", "").replace("frame", "").replace("input", "")
+        .replace("title", "").replace("body", "");
+}
+
+function getAdSrVariable() {
+    var query = location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == "AD_SR" || pair[0] == "ad_sr") {
+            return pair[1];
+        }
+    }
+    return "";
+}
+function getSubDomain(pageUrl, depth) {
+    var hrefSplit = pageUrl.split("/");
+    var result = "";
+    if (hrefSplit.length >= 4) {
+        for (i = 0; i < depth; i++) {
+            if (hrefSplit.length == 4 && hrefSplit[3].length == 0) {
+                result = "Web-Index";
+                break;
+            } else if (hrefSplit.length > 3 + i) {
+                result += (hrefSplit[3 + i] + "-");
+            } else {
+                break;
+            }
+        }
+    } else {
+        result = "Web-Index";
+    }
+    return result;
+}
+
+function dmpSr_view_log(dmpSr, sp_variable,memberId) {
+        // 請注意廣告參數分隔之設定
+        var info = sp_variable.split(",")[0] + "," + sp_variable.split(",")[1] + "," + sp_variable.split(",")[2] + "," + sp_variable.split(",")[3];  // 去除無用資訊
+        var userAgent = navigator.userAgent;
+        var isMobile = {
+            Android: function () {
+                return userAgent.match(/Android/i);
+            },
+            BlackBerry: function () {
+                return userAgent.match(/BlackBerry/i);
+            },
+            iOS: function () {
+                return userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function () {
+                return userAgent.match(/Opera Mini/i);
+            },
+            Windows: function () {
+                return userAgent.match(/IEMobile/i);
+            },
+            any: function () {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
+        };
+        var url = htmlEscape(location.href);
+        var refer_url = htmlEscape(document.referrer);
+        var platform = "PC";
+        if (isMobile.any()) {
+            platform = "Mobile";
+        }
+        var os = getOS(userAgent);
+        var browser = getBrowser(userAgent);
+        var ifrm = document.createElement("iframe");
+        var ifrm_profile = document.createElement("iframe");
+        var subDomain = getSubDomain(url, 1);
+        var AD_SR = getAdSrVariable();
+        var urlValue = "//dmp.eland-tech.com/dmpreceiver/viewreceiver?";
+        var profile = "//dmp.eland-tech.com/profile_receiver/profile_receiver?";
+        var para = "";
+        para += "DMP_SR=" + dmpSr;
+        para += "&info=" + info;
+        para += "&target=ad";
+        para += "&url=" + encodeURIComponent(url) + "&refer_url=" + encodeURIComponent(refer_url);
+        para += "&platform=" + platform;
+        para += "&os=" + os;
+        para += "&browser=" + browser;
+        para += "&adSrTag=" + AD_SR;
+        para += "&subDomain=" + subDomain;
+        para += "&member_id=" + memberId;
+        if (navigator.cookieEnabled) {
+            para += "&ce=1";
+        } else {
+            para += "&ce=0";
+        }
+        if(os == "iOS" && typeof(fingerprint) != "undefined"){
+            para += "&fp=" + fingerprint;
+        }       
+        ifrm.setAttribute("src", urlValue + para);
+        ifrm.style.width = 0 + "px";
+        ifrm.style.height = 0 + "px";
+        ifrm.style.border = 0 + "px";
+        ifrm.style.display = "none";
+        document.body.appendChild(ifrm);
+        ifrm_profile.setAttribute("src", profile + para);
+        ifrm_profile.style.width = 0 + "px";
+        ifrm_profile.style.height = 0 + "px";
+        ifrm_profile.style.border = 0 + "px";
+        ifrm_profile.style.display = "none";
+        document.body.appendChild(ifrm_profile);
+        cookie_mapping("m.doublemax.net/ml/eland");
+}
+// 用於啟動click log收集接口
+// 使用時已知接呼叫function的方式，未來換約後僅更新function內容即可
+// CF平台範例
+// dmpSr_click_log("CF","site_id,zone_id,campaign_id,banner_id")
+// MF平台範例  (請確認MF的廣告sp參數是否與CF的格式一致)
+// dmpSr_click_log("MF","site_id,zone_id,campaign_id,banner_id,....")
+function dmpSr_click_log(dmpSr,sp_variable,memberId) {
+    var info = sp_variable.split(":")[0] + "," + sp_variable.split(":")[1] + "," + sp_variable.split(":")[2] + "," + sp_variable.split(":")[3];
+    var userAgent = navigator.userAgent;
+    var isMobile = {
+        Android: function () {
+            return userAgent.match(/Android/i);
+        },
+        BlackBerry: function () {
+            return userAgent.match(/BlackBerry/i);
+        },
+        iOS: function () {
+            return userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function () {
+            return userAgent.match(/Opera Mini/i);
+        },
+        Windows: function () {
+            return userAgent.match(/IEMobile/i);
+        },
+        any: function () {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+    var url = htmlEscape(location.href);
+    var refer_url = htmlEscape(document.referrer);
+    var platform = "PC";
+    if (isMobile.any()) {
+        platform = "Mobile";
+    }
+    var os = getOS(userAgent);
+    var browser = getBrowser(userAgent);
+    var ifrm = document.createElement("iframe");
+    var subDomain = getSubDomain(url, 1);
+    var AD_SR = getAdSrVariable();
+    var urlValue = "//dmp.eland-tech.com/dmpreceiver/clickreceiver?";
+    urlValue += "DMP_SR=" + dmpSr;
+    urlValue += "&info=" + info;
+    urlValue += "&target=ad";
+    urlValue += "&url=" + encodeURIComponent(url) + "&refer_url=" + encodeURIComponent(refer_url);
+    urlValue += "&platform=" + platform;
+    urlValue += "&os=" + os;
+    urlValue += "&browser=" + browser;
+    urlValue += "&adSrTag=" + AD_SR;
+    urlValue += "&subDomain=" + subDomain;
+    urlValue += "&member_id=" + memberId;
+    if (navigator.cookieEnabled) {
+        urlValue += "&ce=1";
+    } else {
+        urlValue += "&ce=0";
+    }
+    if(os == "iOS" && typeof(fingerprint) != "undefined"){
+        urlValue += "&fp=" + fingerprint;
+    }
+    ifrm.setAttribute("src", urlValue);
+    ifrm.style.width = 0 + "px";
+    ifrm.style.height = 0 + "px";
+    ifrm.style.border = 0 + "px";
+    ifrm.style.display = "none";
+    document.body.appendChild(ifrm);
+    cookie_mapping("m.doublemax.net/ml/eland");
+}
